@@ -1,0 +1,179 @@
+var ROUTE_COLOR = "#999999";
+var SUBROUTE_COLORS = [
+	"#FF0000",
+	"#FFFF00",
+	"#00FF00",
+	"#00FFFF",
+	"#0000FF",
+	"#FF00FF"
+];
+
+// globalne premenne, nech ich mozem pouzivat v ostatnych funkciach
+var directionsService;
+var directionsDisplay;
+var map;
+
+// mozno nie uplne stastne, ak to budeme chciet zobrazovat do jednej mapy....
+function initMap() {
+	directionsService = new google.maps.DirectionsService();
+	directionsDisplay = new google.maps.DirectionsRenderer();
+	//TODO docasny stred
+	var mapOptions = {
+		zoom: 7,
+		center: {lat: 48.6690, lng: 19.6990}
+	}
+
+	map = new google.maps.Map(document.getElementById("routeMap"), mapOptions);
+
+	directionsDisplay.setMap(map);
+}
+
+// len na testovanie...
+// vytvori trasu a prida ju na mapu
+function calcRoute(request) {
+	directionsService.route(request, function (result, status) {
+		if (status == 'OK') {
+			//directionsDisplay.setDirections(result);
+			//console.log(result);
+
+			// extrahujeme body cesty z najdeneho vysledku
+			var routeCoords = result.routes[0].overview_path;
+			// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
+
+			//console.log(routeCoords);
+
+			displayRoute(routeCoords, [10000, 20000, 30000]);
+		}
+		// ak sa nezobrazuje trasa treba pozriet, ci sa vratil status OK a osetrit chyby
+	})
+}
+
+// funkcia vykresli na mapu trasu a casti tejto trasy zadanych dlzok
+// route - pole LatLng objektov urcujuce body trasy
+// subdistances - pole vzdialenosti, ktore presli jednotlivi ludia urcujuce dlzky usekov trasy v "route" v METROCH
+function displayRoute(route, subdistances) {
+	// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
+
+	// vytvorim cirau pre celu trasu a zobrazim ju
+	vykresliPath(route, ROUTE_COLOR);
+
+	var cummulativeDist = [0.0];
+	// predpocitam si kumulativnu vzdialenost od zaciatku pre kazdy bod trasy
+	for(i = 1; i < route.length; i++) {
+		// pre i-tu polozku je kumulativna vzdialenost = i-1-tej polozky + vzdialenost medzi i-tym a i-1-tym bodom
+		cummulativeDist.push(cummulativeDist[i-1]);
+
+		// vyratam vzdialenost
+		// podla: https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
+		cummulativeDist[i] += distanceInMBetweenEarthCoordinates(route[i-1].lat(), route[i-1].lng(), route[i].lat(), route[i].lng());
+	}
+
+	// usporiadam skratene useky od najvacsieho, nech sa nezakryvaju ciary
+	subdistances.sort(); // ascending
+	subdistances.reverse(); // descending
+
+	// vytvorim ciary pre skratene useky
+	for(i = 0; i < subdistances.length; i++) {
+		// najdem cast celkovej trate, ktora je uz predena
+		var bound = upperBound(cummulativeDist, 0, cummulativeDist.length-1, subdistances[i]);
+
+		if(bound == -1) {
+			// prejdena trat je > ako cielova => vykreslim celu
+			vykresliPath(route, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+		}
+		else {
+			// prejdena trat je kratsia => trafil som nahodou presne? (skoro urcite nie, kedze mame realne cisla....)
+			if(subdistances[i] == cummulativeDist[bound]) {
+				// presne => iba vykreslim
+				vykresliPath(route.slice(0, bound+1), SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+			}
+			else {
+				// musim dopocitat novy koncovy bod
+				var distDif = cummulativeDist[bound] - subdistances[i]; // rozdiel kumulativnej vzdialenosti pri vacsom bode a aktualnej
+				var pointDistDif = cummulativeDist[bound] - cummulativeDist[bound-1]; // rozdiel medzi poslednymi bodmi
+				var percentage = distDif/pointDistDif; // podiel rozdielov
+
+				var latDif = route[bound].lat() - route[bound-1].lat(); // rozdiel latitude
+				var lngDif = route[bound].lng() - route[bound-1].lng(); // rozdiel longtitude
+
+				var subPath = route.slice(0, bound);
+				subPath.push(new google.maps.LatLng(route[bound-1].lat() + latDif*percentage, route[bound-1].lng() + lngDif*percentage));
+
+				// vykreslim
+				vykresliPath(subPath, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+			}
+		}
+	}
+}
+
+// pomocna funkcia na vykreslenie ciary
+function vykresliPath(path, color) {
+	var newPath = new google.maps.Polyline({
+		path: path,
+		geodesic: true,
+		strokeColor: color,
+		strokeOpacity: 1.0,
+		strokeWeight: 5
+	});
+
+	newPath.setMap(map);
+}
+
+// pomocne funkcie na vypocet vzdialenosti
+// podla: https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
+// uprava na vzdialenost v metroch
+function degreesToRadians(degrees) {
+	return degrees * Math.PI / 180;
+}
+
+function distanceInMBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+	var earthRadiusM = 6371000;
+
+	var dLat = degreesToRadians(lat2-lat1);
+	var dLon = degreesToRadians(lon2-lon1);
+
+	lat1 = degreesToRadians(lat1);
+	lat2 = degreesToRadians(lat2);
+
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	return earthRadiusM * c;
+}
+
+// pomocne funkcie na najdenie horneho ohranicenia pre nejaky prvok v zotriedenom poly
+// podla: https://www.geeksforgeeks.org/ceiling-in-a-sorted-array/
+function upperBound(array, low, high, x) {
+	// TL; DR binarne vyhladavanie
+	// adaptacia C-ckovskeho kodu z uvedenej stranky do javascriptu
+	var mid;
+
+	if(x <= array[low]) {
+		return low;
+	}
+
+	if(x > array[high]) {
+		return -1;
+	}
+
+	mid = Math.floor((low+high)/2); // celociselne delenie, lebo indexy
+
+	if(x == array[mid]) {
+		return mid;
+	}
+	else if(x > array[mid]) {
+		if(mid+1 <= high && x <= array[mid+1]) {
+			return mid+1;
+		}
+		else return upperBound(array, mid+1, high, x);
+	}
+	else {
+		if(mid - 1 >= low && x > array[mid-1]) {
+			return mid;
+		}
+		else return upperBound(array, low, mid-1, x);
+	}
+}
+
+
+// nastavenie callbecku, aby sa pri nacitani stranky spustila mapa
+google.maps.event.addDomListener(window, "load", initMap);
