@@ -25,20 +25,8 @@ $db = new DBConn();
 			</div>
 		</div>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
-			<div class="col-10">
-				<div class="row my-4">
-					<div class="col">
-						<div id="map" class="w-100"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-6">
-						<a href="login.php" class="btn btn-block btn-dark">Prihlásenie</a>
-					</div>
-					<div class="col-6">
-						<a href="register.php" class="btn btn-block btn-dark">Registrácia</a>
-					</div>
-				</div>
+			<div class="col">
+				<div id="map" class="w-100"></div>
 			</div>
 		</div>
 	</div>
