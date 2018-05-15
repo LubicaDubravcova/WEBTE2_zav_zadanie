@@ -20,11 +20,6 @@ $db = new DBConn();
 	<div class="container text-center">
 		<div class="row">
 			<div class="col">
-				<h1 class="mt-5">Webové Technológie 2</h1>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col">
 				<h2 class="m-4 d-inline-block">Test zobrazenia trasy</h2>
 			</div>
 		</div>

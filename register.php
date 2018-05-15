@@ -47,8 +47,11 @@ if (isset($_POST['email'])) {
 <body class="bg-dark text-white text-center">
 	<?php require("includes/navbar.php"); ?>
 	<div class="container">
-		<h1 class="mt-5">Webové Technológie 2</h1>
-		<h2 class="m-4">Registrácia</h2>
+		<div class="row">
+			<div class="col">
+				<h2 class="m-4 d-inline-block">Registrácia</h2>
+			</div>
+		</div>
 		<div class="row justify-content-center">
 			<div class="col-md-6 col-md-offset-3 bg-light text-dark rounded p-5">
 				<?php if ($alreadyExists) echo "<div class='row form-group'><div class='btn btn-block btn-danger disabled'>E-mail sa už používa</div></div>"?>
@@ -154,7 +157,7 @@ if (isset($_POST['email'])) {
 		
     	$("#schoolCity").autocomplete({
         	source: function (request, response) {
-				jQuery.get("autocomplete.php", {
+				jQuery.get("workers/autocomplete.php", {
 					psc: $("#schoolPSC").val(),
 					city: request.term
 				}, function (data) {
@@ -172,11 +175,18 @@ if (isset($_POST['email'])) {
     	}).focus(function(){
             $(this).data("uiAutocomplete").search($(this).val());
         }).change(function() {
-			$("#schoolAddress").prop("disabled",false);
+			$("#schoolAddress").prop("disabled",false).val("");
+			$("#schoolName").val('').prop('disabled',true).val("");
+			$("#schoolID").val('');
+		});
+		$("#schoolPSC").change(function() {
+			$("#schoolAddress").prop("disabled",false).val("");
+			$("#schoolName").val('').prop('disabled',true).val("");
+			$("#schoolID").val('');
 		});
 		$("#schoolAddress").autocomplete({
         	source: function (request, response) {
-				jQuery.get("autocomplete.php", {
+				jQuery.get("workers/autocomplete.php", {
 					address: request.term,
 					psc: $("#schoolPSC").val(),
 					city: $("#schoolCity").val()
@@ -196,7 +206,7 @@ if (isset($_POST['email'])) {
 		}).focus(function(){
             $(this).data("uiAutocomplete").search($(this).val());
         }).change(function() {
-			jQuery.get("autocomplete.php", {
+			jQuery.get("workers/autocomplete.php", {
 				address: $(this).val(),
 				psc: $("#schoolPSC").val(),
 				city: $("#schoolCity").val(),

@@ -26,8 +26,11 @@ if (isset($_POST['email'])) {
 <body class="bg-dark text-white text-center">
 	<?php require("includes/navbar.php"); ?>
 	<div class="container">
-		<h1 class="mt-5">Webové Technológie 2</h1>
-		<h2 class="m-4">Záverečné Zadanie</h2>
+		<div class="row">
+			<div class="col">
+				<h2 class="m-4 d-inline-block">Prihlásenie</h2>
+			</div>
+		</div>
 		<div class="row justify-content-center">
 			<div class="col-md-6 col-md-offset-3 bg-light text-dark rounded p-5">
 			<?php if (!$result) echo "<div class='row form-group'><div class='btn btn-block btn-danger disabled'>Zlý e-mail alebo heslo!</div></div>"?>
