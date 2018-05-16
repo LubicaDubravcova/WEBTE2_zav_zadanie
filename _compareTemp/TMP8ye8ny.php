@@ -31,8 +31,11 @@ class DBConn {
 		return substr($address,0,strrpos($address, " "))." ".substr($address,$slashPos+1);
 	}
 	
-	function getDB() {
-		return $this->db;
+	function truncAll() {
+		$this->db->query("SET FOREIGN_KEY_CHECKS=0");
+		$this->db->query("TRUNCATE `schools`");
+		$this->db->query("TRUNCATE `users`");
+		$this->db->query("SET FOREIGN_KEY_CHECKS=1");
 	}
 	
     function exists($email) {
@@ -144,10 +147,6 @@ class DBConn {
 		if ($column)
 			return array_column($result->fetch_all(MYSQLI_ASSOC),$column);
 		return $result->fetch_all(MYSQLI_ASSOC);
-	}
-
-	function insertQuery($query){
-		$result = $this->db->query($query);
 	}
 	
 	function getSchoolID($school) { //get id of specified school, if it doesnt exist, add new.

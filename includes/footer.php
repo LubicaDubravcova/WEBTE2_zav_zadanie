@@ -2,7 +2,7 @@
 	<div class="container">
 		<?php if ($role != false): ?>
 		<div class="row">
-			<div class="col">
+			<div class="col-10">
 				<div id="newsCarousel" class="carousel slide" data-ride="carousel">
 					<div class="carousel-inner">
 						<div class="carousel-item active">
@@ -34,6 +34,13 @@
 					</a>
 				</div>
 			</div>
+			<div class="col text-dark">
+				<label class="chckbx d-flex flex-row w-100 h-100 align-items-center">
+					<div class="m-2">Subscribe</div>
+					<input id="subCheck" type="checkbox" <?php if($userData->SUBSCRIBED) echo "checked";?>>
+					<span class="checkmark"></span>
+				</label>
+			</div>
 		</div>
 		<?php endif; ?>
 		<div id="copyright" class="text-dark w-100 text-center">
@@ -42,7 +49,10 @@
 	</div>
 	<script>
 		$( document ).ready(function(){
-			$("body").css("margin-bottom", $(".footer").height() + 20 + "px")
+			$("body").css("margin-bottom", $(".footer").height() + 20 + "px");
+		});
+		$("#subCheck").change(function(){
+			$.post("workers/subscribe.php", {id : <?php echo $userData->ID;?>, sub : this.checked});
 		});
 	</script>
 </footer>

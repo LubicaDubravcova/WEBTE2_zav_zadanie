@@ -35,11 +35,8 @@ if (isset($_SESSION["login"])) {
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
 				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
 				<li class="nav-item"><a class="nav-link" href="#">Lorem Ipsum</a>
-				<li class="nav-item"><a class="nav-link" href="news.php">Aktuality</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
 				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
-				<li class="nav-item"><a class="nav-link" href="news.php">Aktuality</a>
-				<li class="nav-item"><a class="nav-link" href="addNews.php">Pridaj aktualitu</a>
 				<?php endif; ?>
 			</ul>
 			<ul class="navbar-nav ml-auto"> <!-- prave menu -->
@@ -51,7 +48,7 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">And now for something completely different</a>
+						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>

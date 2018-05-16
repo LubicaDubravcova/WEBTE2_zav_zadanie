@@ -1,9 +1,3 @@
-<?php 
-header('Content-Type: text/html; charset=utf-8'); 
-include_once("workers/dbConn.php");
-$db = new DBConn();
-?>
-
 <!doctype html>
 <html>
 <head>

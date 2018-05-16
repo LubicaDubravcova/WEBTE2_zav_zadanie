@@ -1,9 +1,5 @@
 <?php 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 header('Content-Type: text/html; charset=utf-8'); 
 include_once("workers/dbConn.php");
 $database = new DBConn();
@@ -27,9 +23,11 @@ $database = new DBConn();
     }
 
     if($change == true){
-	   $q2 = "INSERT INTO News SET News.Nazov ='$name', News.Text ='$textarea'";
-       $database->getAssoc($q2);
-     
+	   $q2 = "INSERT INTO News (ID, Nazov, Text) VALUES (NULL,'$name','$textarea')";
+       $res = $database->insertQuery($q2);
+       if($res == false){
+       	header("Location: http://147.175.98.151/RealZaverecne/addNews.php");
+       }
    }
 ?>
 

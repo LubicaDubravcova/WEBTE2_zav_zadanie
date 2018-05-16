@@ -32,6 +32,50 @@ body {
 	margin-bottom:5px;
 }
 
+.chckbx input{
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position:relative;
+	display: block;
+	height: 25px;
+	width: 25px;
+	background-color: #222;
+}
+
+/* On mouse-over, add a grey background color */
+.chckbx:hover input ~ .checkmark {
+	background-color: #555;
+}
+
+/* When the checkbox is checked, add a blue background */
+.chckbx input:checked ~ .checkmark {
+	background-color: #000;
+}
+
+/* Show the checkmark when checked */
+.chckbx input:checked ~ .checkmark:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.chckbx .checkmark:after {
+	content: "";
+	display:none;
+	position:absolute;
+	width: 20px;
+	height: 22px;
+	left: 2px;
+	top: 2px;
+	background-size:contain;
+	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23ccc' viewBox='0 0 24 24'><path d='M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z'/%3E%3C/svg%3E")!important;
+	background-repeat:no-repeat;
+}
+
 @media only screen and (max-width: 1000px) {
     .footer {
 		position: absolute;
