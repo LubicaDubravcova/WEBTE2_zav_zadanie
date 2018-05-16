@@ -58,7 +58,7 @@ class DBConn {
 	function register($data = array()) {
 		if($this->exists($data["email"])) 
 			return false;
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?)");
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user')");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);

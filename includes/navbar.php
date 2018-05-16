@@ -28,8 +28,8 @@
 				<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Prihlásenie</a>
 				<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
 					<form class="form-inline" method="post" action="workers/login.php">
-						<input type="email" name="email" class="form-control m-1" placeholder="E-mail" aria-label="E-mail" required>
-						<input type="password" name="password" class="form-control m-1" minlength="8" aria-label="Password" id="inputPassword" required placeholder="Heslo">
+						<input type="email" name="email" class="form-control m-1" placeholder="E-mail" id="loginEmail" aria-label="E-mail" required>
+						<input type="password" name="password" class="form-control m-1" minlength="8" aria-label="Password" id="loginPassword" required placeholder="Heslo">
 						<input type="hidden" name="site" value='<?php echo basename($_SERVER['PHP_SELF']);?>'>
 						<div class="dropdown-divider"></div>
 						<div class="w-100 row m-0">
@@ -46,15 +46,16 @@
 			<?php endif; ?>
 		</ul>
 	</div>
-</nav>
-<script>
-	if (!Array.prototype.last){ //metoda na ziskanie posledneho clena pola
-		Array.prototype.last = function(){
-			return this[this.length - 1];
+	<script> //Script na oznacenie aktivneho linku v navbare
+		if (!Array.prototype.last){ //metoda na ziskanie posledneho clena pola
+			Array.prototype.last = function(){
+				return this[this.length - 1];
+			};
 		};
-	};
-	$(".nav-item .nav-link").each(function(){
-		if (this.href.split('/').last == window.location.pathname.split('/').last)
-			this.parentElement.classList.add("active");
-	});
-</script>
+		$(".nav-item .nav-link").each(function(){
+			console.log(this.href.split('/').last() +"=="+ window.location.pathname.split('/').last());
+			if (this.href.split('/').last() == window.location.pathname.split('/').last())
+				this.parentElement.classList.add("active");
+		});
+	</script>
+</nav>

@@ -2,10 +2,6 @@
 header('Content-Type: text/html; charset=utf-8'); 
 
 session_start();
-if (isset($_SESSION['userData'])) {
-	header('Location: profile.php');
-	die();
-}
 
 if (isset($_POST['email'])) {
 	include_once("workers/dbConn.php");
@@ -53,7 +49,7 @@ if (isset($_POST['email'])) {
 			</div>
 		</div>
 		<div class="row justify-content-center">
-			<div class="col-md-6 col-md-offset-3 bg-light text-dark rounded p-5">
+			<div class="col-md-8 col-md-offset-3 bg-light text-dark rounded p-5">
 				<?php if ($alreadyExists) echo "<div class='row form-group'><div class='btn btn-block btn-danger disabled'>E-mail sa už používa</div></div>"?>
 				<form method="post" action="#">
 					<div class="form-group row">
@@ -139,89 +135,6 @@ if (isset($_POST['email'])) {
 			</div>
 		</div>
 	</div>
-	
-	<script>
-		var password = document.getElementById("inputPassword");
-		var confirm_password = document.getElementById("inputConfirm");
-
-		function validatePassword(){
-			if(password.value != confirm_password.value) {
-				confirm_password.setCustomValidity("Heslá sa nezhodujú!");
-		  	} else {
-				confirm_password.setCustomValidity('');
-		  	}
-		}
-		
-		password.onchange = validatePassword;
-		confirm_password.onkeyup = validatePassword;
-		
-    	$("#schoolCity").autocomplete({
-        	source: function (request, response) {
-				jQuery.get("workers/autocomplete.php", {
-					psc: $("#schoolPSC").val(),
-					city: request.term
-				}, function (data) {
-					var parsed = JSON.parse(data);
-					// assuming data is a JavaScript array such as
-					// ["one@abc.de", "onf@abc.de","ong@abc.de"]
-					// and not a string
-					response(parsed);
-				});
-			},
-			select: function( event, ui ) {
-				$(this).trigger("change");
-			},
-			minLength: 0
-    	}).focus(function(){
-            $(this).data("uiAutocomplete").search($(this).val());
-        }).change(function() {
-			$("#schoolAddress").prop("disabled",false).val("");
-			$("#schoolName").val('').prop('disabled',true).val("");
-			$("#schoolID").val('');
-		});
-		$("#schoolPSC").change(function() {
-			$("#schoolAddress").prop("disabled",false).val("");
-			$("#schoolName").val('').prop('disabled',true).val("");
-			$("#schoolID").val('');
-		});
-		$("#schoolAddress").autocomplete({
-        	source: function (request, response) {
-				jQuery.get("workers/autocomplete.php", {
-					address: request.term,
-					psc: $("#schoolPSC").val(),
-					city: $("#schoolCity").val()
-				}, function (data) {
-					var parsed = JSON.parse(data);
-					// assuming data is a JavaScript array such as
-					// ["one@abc.de", "onf@abc.de","ong@abc.de"]
-					// and not a string
-					response(parsed);
-				});
-			},
-			select: function( event, ui ) {
-				$(this).val(ui.item.value);
-				$(this).trigger("change");
-			},
-			minLength: 0
-		}).focus(function(){
-            $(this).data("uiAutocomplete").search($(this).val());
-        }).change(function() {
-			jQuery.get("workers/autocomplete.php", {
-				address: $(this).val(),
-				psc: $("#schoolPSC").val(),
-				city: $("#schoolCity").val(),
-				select: true
-			}, function (data) {
-				if (data == "null") {
-					$("#schoolName").val('').prop('disabled',false);
-					$("#schoolID").val('');
-				} else {
-					var parsed = JSON.parse(data);
-					$("#schoolName").val(parsed.name).prop('disabled',true);
-					$("#schoolID").val(parsed.id);
-				}
-			});
-		});
-	</script>
+	<script src="scripts/register.js"></script>
 </body>
 </html>
