@@ -78,8 +78,30 @@ class DBConn {
 		$stmt->close();
 	}
 	
+	function getUserData() {
+		$stmt = $this->db->prepare("SELECT * FROM $this->userTable WHERE id = ?");
+	
+		if ($stmt === false) {
+		  trigger_error($this->db->error, E_USER_ERROR);
+		  return;
+		}
+
+		$stmt->bind_param('i',$_SESSION["login"]["id"]);
+
+		/* BK: always check whether the execute() succeeded */
+		if ($stmt->execute() === false) {
+		  trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$result = $stmt->get_result()->fetch_object();
+		$stmt->close();
+		if (strcmp($result->PASSWORD,$_SESSION["login"]["password"])==0) {
+			return $result;
+		}
+		return false;
+	}
+	
 	function login($data = array()) {
-		$stmt = $this->db->prepare("SELECT * FROM $this->userTable WHERE email = ?");
+		$stmt = $this->db->prepare("SELECT id, password FROM $this->userTable WHERE email = ?");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -94,7 +116,7 @@ class DBConn {
 		}
 		$result = $stmt->get_result()->fetch_assoc();
 		$stmt->close();
-		if (strcmp($result["password"],hash('sha256',$data["password"]))) {
+		if (strcmp($result["password"],hash('sha256',$data["password"])) == 0) {
 			return $result;
 		}
 		return false;

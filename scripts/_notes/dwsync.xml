@@ -3,4 +3,8 @@
 <file name="map.js" server="147.175.98.151/public_html/" local="131707865346743669" remote="131707865460000000" Dst="2" />
 <file name="markerclusterer.js" server="147.175.98.151/public_html/" local="131688832360000000" remote="131707786350000000" Dst="2" />
 <file name="displayRoute.js" server="147.175.98.151/public_html/" local="131708431670000000" remote="131708431670000000" Dst="2" />
+<file name="markerclusterer.js" server="147.175.98.151/public_html/RealZaverecne/" local="131708559906227293" remote="131708585330000000" Dst="2" />
+<file name="map.js" server="147.175.98.151/public_html/RealZaverecne/" local="131708559905821714" remote="131708585330000000" Dst="2" />
+<file name="displayRoute.js" server="147.175.98.151/public_html/RealZaverecne/" local="131708559905801704" remote="131708585850000000" Dst="2" />
+<file name="register.js" server="147.175.98.151/public_html/RealZaverecne/" local="131709296294950397" remote="131709296420000000" Dst="2" />
 </dwsync>

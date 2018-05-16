@@ -1,8 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8'); 
 
-session_start();
-
 if (isset($_POST['email'])) {
 	include_once("workers/dbConn.php");
 	$user = new dbConn();
@@ -10,9 +8,10 @@ if (isset($_POST['email'])) {
 	$alreadyExists = $user->exists($_POST['email']);
     if (!$alreadyExists) {
 		$user->register($_POST);
-		$_SESSION['userData'] = $user->login($_POST);
-		header('Location: profile.php');
-		die();
+		if ($user->login($_POST)) {
+			header('Location: index.php');
+			die();
+		}
 	}
 }
 ?>
