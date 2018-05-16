@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="dbConn.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709496390282345" remote="131709496520000000" Dst="2" />
+<file name="dbConn.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709733640000000" remote="131709733640000000" Dst="2" />
 <file name="autocomplete.php" server="147.175.98.151/public_html/RealZaverecne/" local="131708559905373224" remote="131708592020000000" Dst="2" />
 <file name="login.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709491928074222" remote="131709492050000000" Dst="2" />
 <file name="logout.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709512319108066" remote="131709512440000000" Dst="2" />
+<file name="cron-delete.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709548193118914" remote="131709593340000000" Dst="2" />
 </dwsync>

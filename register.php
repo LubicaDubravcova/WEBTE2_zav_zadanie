@@ -134,6 +134,7 @@ if (isset($_POST['email'])) {
 			</div>
 		</div>
 	</div>
+	<?php require("includes/footer.php");?>
 	<script src="scripts/register.js"></script>
 </body>
 </html>

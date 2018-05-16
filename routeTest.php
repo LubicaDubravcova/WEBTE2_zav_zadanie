@@ -45,6 +45,7 @@ $db = new DBConn();
 			</div>
 		</div>
 	</div>
+	<?php require("includes/footer.php");?>
 	<script type="text/javascript">
 
 		function sendRouteRequest() {

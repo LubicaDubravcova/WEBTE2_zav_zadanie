@@ -52,7 +52,7 @@ class DBConn {
 		$stmt->store_result();
 		$alreadyExists = ($stmt->num_rows != 0);
 		$stmt->close();
-		return $alredyExists;
+		return $alreadyExists;
 	}
 	
 	function register($data = array()) {
@@ -148,6 +148,11 @@ class DBConn {
 			return array_column($result->fetch_all(MYSQLI_ASSOC),$column);
 		return $result->fetch_all(MYSQLI_ASSOC);
 	}
+
+    function getAllUsers() {
+        $result = $this->db->query("SELECT * FROM `users`");
+        return $result;
+    }
 	
 	function getSchoolID($school) { //get id of specified school, if it doesnt exist, add new.
 		$stmt = $this->db->prepare("SELECT id FROM schools WHERE ADDRESS_ID = ?");

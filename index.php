@@ -30,6 +30,7 @@ $db = new DBConn();
 			</div>
 		</div>
 	</div>
+	<?php require("includes/footer.php");?>
 	<script type="text/javascript">
     	var locations = <?php echo json_encode($db->getAssoc("SELECT a.lat, a.lng FROM users u INNER JOIN addresses a ON u.ADDRESS_ID = a.ID"));?>;
 		var schools = <?php echo json_encode($db->getAssoc("SELECT a.lat, a.lng, s.name FROM users u INNER JOIN schools s ON u.SCHOOL_ID = s.ID INNER JOIN addresses a ON s.ADDRESS_ID = a.ID"));?>;
