@@ -28,7 +28,7 @@ function AutocompleteDirectionsHandler(map) {
 		//panel: document.getElementById('right-panel')
 	});
 
-	directionsDisplay.addListener('directions_changed', function() {
+	this.directionsDisplay.addListener('directions_changed', function() {
 		fillFormData(directionsDisplay.getDirections());
 	});
 
