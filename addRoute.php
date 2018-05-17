@@ -48,9 +48,9 @@
 					<div class="form-group">
 						<label for="name">Názov trasy:</label>
 						<input type="text" class="form-control" name="name" id="name">
-						<label for="length">Dĺžka trasy v metroch:</label>
+						<label for="length">Dĺžka trasy (v metroch):</label>
 						<input type="text" class="form-control" name="length" id="length" disabled>
-						<input type="hidden" name="path" id="path">
+						<input type="text" name="path" id="path">
 					</div>
 				</form>
 

@@ -27,7 +27,11 @@ function AutocompleteDirectionsHandler(map) {
 		map: map,
 		//panel: document.getElementById('right-panel')
 	});
-	this.directionsDisplay.setMap(map);
+
+	directionsDisplay.addListener('directions_changed', function() {
+		fillFormData(directionsDisplay.getDirections());
+	});
+
 
 	var originAutocomplete = new google.maps.places.Autocomplete(
 		originInput, {placeIdOnly: true});
@@ -79,25 +83,17 @@ AutocompleteDirectionsHandler.prototype.route = function() {
 	});
 };
 
+function fillFormData(result) {
+	var route = result.routes[0];
+	var distance = 0.0;
+	// nascitam celkovu vzdialenost usekov
+	for (var i = 0; i < route.legs.length; i++) {
+		distance += myroute.legs[i].distance.value;
+	}
 
+	// vlozim do formulara
+	document.getElementById("length").value = distance;
 
-//TODO
-/*
-function calcRoute(request) {
-	directionsService.route(request, function (result, status) {
-		if (status == 'OK') {
-			//directionsDisplay.setDirections(result);
-			//console.log(result);
-
-			// extrahujeme body cesty z najdeneho vysledku
-			var routeCoords = result.routes[0].overview_path;
-			// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
-
-			//console.log(routeCoords);
-
-			displayRoute(routeCoords, [10000, 20000, 30000]);
-		}
-		// ak sa nezobrazuje trasa treba pozriet, ci sa vratil status OK a osetrit chyby
-	})
+	// ziskam si kusy ciary reprezentujucej path a vlozim do formulara
+	document.getElementById("path").value = route.overview_path;
 }
-*/
