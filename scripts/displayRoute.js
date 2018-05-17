@@ -8,55 +8,35 @@ var SUBROUTE_COLORS = [
 	"#FF00FF"
 ];
 
-// globalne premenne, nech ich mozem pouzivat v ostatnych funkciach
-var directionsService;
+// globalne premenne
 var directionsDisplay;
 var map;
 
 // mozno nie uplne stastne, ak to budeme chciet zobrazovat do jednej mapy....
 function initMap() {
-	directionsService = new google.maps.DirectionsService();
 	directionsDisplay = new google.maps.DirectionsRenderer();
-	//TODO docasny stred
+	//stred Slovenska
 	var mapOptions = {
 		zoom: 7,
 		center: {lat: 48.6690, lng: 19.6990}
 	}
 
-	map = new google.maps.Map(document.getElementById("routeMap"), mapOptions);
+	map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
 	directionsDisplay.setMap(map);
-}
-
-// len na testovanie...
-// vytvori trasu a prida ju na mapu
-function calcRoute(request) {
-	directionsService.route(request, function (result, status) {
-		if (status == 'OK') {
-			//directionsDisplay.setDirections(result);
-			//console.log(result);
-
-			// extrahujeme body cesty z najdeneho vysledku
-			var routeCoords = result.routes[0].overview_path;
-			// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
-
-			//console.log(routeCoords);
-
-			displayRoute(routeCoords, [10000, 20000, 30000]);
-		}
-		// ak sa nezobrazuje trasa treba pozriet, ci sa vratil status OK a osetrit chyby
-	})
 }
 
 // funkcia vykresli na mapu trasu a casti tejto trasy zadanych dlzok
 // route - pole LatLng objektov urcujuce body trasy
 // subdistances - pole vzdialenosti, ktore presli jednotlivi ludia urcujuce dlzky usekov trasy v "route" v METROCH
-function displayRoute(route, subdistances) {
+function displayRoute(route, subdistances = []) {
 	// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
 
 	// vytvorim cirau pre celu trasu a zobrazim ju
-	vykresliPath(route, ROUTE_COLOR);
+	renderPath(route, ROUTE_COLOR);
 
+	var routeBoundaries = new google.maps.LatLngBounds(); // na vycentrovanie pohladu na trasu podla: https://stackoverflow.com/questions/3320925/google-maps-api-calculate-center-zoom-of-polyline/18352311
+	routeBoundaries.extend(route[0]);
 	var cummulativeDist = [0.0];
 	// predpocitam si kumulativnu vzdialenost od zaciatku pre kazdy bod trasy
 	for(i = 1; i < route.length; i++) {
@@ -66,7 +46,13 @@ function displayRoute(route, subdistances) {
 		// vyratam vzdialenost
 		// podla: https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
 		cummulativeDist[i] += distanceInMBetweenEarthCoordinates(route[i-1].lat(), route[i-1].lng(), route[i].lat(), route[i].lng());
+
+		// pridam suradnice do boundaries trasy
+		routeBoundaries.extend(route[i]);
 	}
+
+	// vycentrujem pohlad na trasu
+	map.fitBounds(routeBoundaries);
 
 	// usporiadam skratene useky od najvacsieho, nech sa nezakryvaju ciary
 	subdistances.sort(); // ascending
@@ -79,13 +65,13 @@ function displayRoute(route, subdistances) {
 
 		if(bound == -1) {
 			// prejdena trat je > ako cielova => vykreslim celu
-			vykresliPath(route, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+			renderPath(route, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
 		}
 		else {
 			// prejdena trat je kratsia => trafil som nahodou presne? (skoro urcite nie, kedze mame realne cisla....)
 			if(subdistances[i] == cummulativeDist[bound]) {
 				// presne => iba vykreslim
-				vykresliPath(route.slice(0, bound+1), SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+				renderPath(route.slice(0, bound+1), SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
 			}
 			else {
 				// musim dopocitat novy koncovy bod
@@ -100,14 +86,14 @@ function displayRoute(route, subdistances) {
 				subPath.push(new google.maps.LatLng(route[bound-1].lat() + latDif*percentage, route[bound-1].lng() + lngDif*percentage));
 
 				// vykreslim
-				vykresliPath(subPath, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+				renderPath(subPath, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
 			}
 		}
 	}
 }
 
 // pomocna funkcia na vykreslenie ciary
-function vykresliPath(path, color) {
+function renderPath(path, color) {
 	var newPath = new google.maps.Polyline({
 		path: path,
 		geodesic: true,
@@ -115,6 +101,8 @@ function vykresliPath(path, color) {
 		strokeOpacity: 1.0,
 		strokeWeight: 5
 	});
+
+	console.log(newPath);
 
 	newPath.setMap(map);
 }
@@ -173,7 +161,3 @@ function upperBound(array, low, high, x) {
 		else return upperBound(array, low, mid-1, x);
 	}
 }
-
-
-// nastavenie callbecku, aby sa pri nacitani stranky spustila mapa
-google.maps.event.addDomListener(window, "load", initMap);
