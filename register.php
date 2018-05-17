@@ -1,13 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8'); 
 
-$message = '<html><body>';
-$message .= "<h1>Vitajte na stránke Route to Fitness</h1>";
-$message .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
-$message .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
-$headers = 'From: webmaster@147.175.98.151.nip.io' . "\r\n" .
-	'Reply-To: webmaster@147.175.98.151.nip.io' . "\r\n";
-$mailSuccess = mail("rikpat5@azet.sk","Registrácia na stránke Route to Fitness",$message,$headers);
 if (isset($_POST['email'])) {
 	include_once("workers/dbConn.php");
 	$user = new dbConn();
@@ -15,13 +8,28 @@ if (isset($_POST['email'])) {
     if (!$alreadyExists) {
 		$timestamp = $user->register($_POST);
 		if ($timestamp != "NULL") {
-			$message = '<html><body>';
-			$message .= "<h1>Vitajte na stránke Route to Fitness</h1>";
-			$message .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
-			$message .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
-			$headers = 'From: webmaster@147.175.98.151.nip.io' . "\r\n" .
-    			'Reply-To: webmaster@147.175.98.151.nip.io' . "\r\n";
-			mail("rikpat5@azet.sk","Registrácia na stránke Route to Fitness",$message,$headers);
+			require_once "workers/vendor/autoload.php";
+
+			$body = '<html><body>';
+			$body .= "<h1>Vitajte na stránke Route to Fitness</h1>";
+			$body .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
+			$body .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
+
+			$transport = (new Swift_SmtpTransport('smtp.azet.sk', 25))
+			  ->setUsername('webte2@azet.sk')
+			  ->setPassword('ZavZad22')
+			;
+
+			$mailer = new Swift_Mailer($transport);
+
+			$message = (new Swift_Message('Vitajte na stránke Route to Fitness'))
+			  ->setFrom(['webte2@azet.sk' => 'Route to Fitness'])
+			  ->setTo($_POST['email'])
+			  ->setBody($body,'text/html')
+			  ;
+
+			// Send the message
+			$emailResult = $mailer->send($message);
 		}
 		
 
@@ -58,12 +66,12 @@ if (isset($_POST['email'])) {
 		<div class="row">
 			<div class="col">
 				<h2 class="m-4 d-inline-block">Registrácia</h2>
-				<?php echo($mailSuccess); ?>
 			</div>
 		</div>
 		<div class="row justify-content-center">
 			<div class="col-md-8 col-md-offset-3 bg-light text-dark rounded p-5">
 				<?php if ($alreadyExists) echo "<div class='row form-group'><div class='btn btn-block btn-danger disabled'>E-mail sa už používa</div></div>"?>
+				<?php if (!isset($emailResult)): ?>
 				<form method="post" action="#">
 					<div class="form-group row">
 						<label for="inputEmail" class="col-sm-3 col-form-label text-right">Email:</label>
@@ -144,6 +152,12 @@ if (isset($_POST['email'])) {
 					<div class="form-group row">
 						<a href="login.php" class="btn btn-block btn-default bg-white">Naspäť na prihlásenie</a>
 					</div>
+					<?php else: ?>
+					<div class="text-center">
+						<h4>Ďakujeme za registráciu</h4>
+						<p>Na váš e-mail sme vám poslali potvrdzovací email s odkazom na aktiváciu vášho účtu</p>
+					</div>
+					<?php endif; ?>
 				</form>
 			</div>
 		</div>
