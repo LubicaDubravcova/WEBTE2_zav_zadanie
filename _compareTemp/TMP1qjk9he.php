@@ -109,7 +109,7 @@ class DBConn {
 		return false;
 	}
 	
-	function login($data) {
+	function login($data = array()) {
 		$stmt = $this->db->prepare("SELECT id, password, confirmtime FROM $this->userTable WHERE email = ?");
 	
 		if ($stmt === false) {
@@ -130,23 +130,6 @@ class DBConn {
 			return $result;
 		}
 		return false;
-	}
-	
-	function activate($data){
-		$stmt = $this->db->prepare("UPDATE $this->userTable SET confirmtime = NULL WHERE email = ? AND confirmtime = ?");
-	
-		if ($stmt === false) {
-			trigger_error($this->db->error, E_USER_ERROR);
-			return;
-		}
-
-		$stmt->bind_param('ss',$data["email"],$data["timestamp"]);
-		
-		$stmt->execute();
-		$stmt->store_result();
-		$success = ($stmt->affected_rows != 0);
-		$stmt->close();
-		return $success;
 	}
 	
 	function loadSchools($file) { //Load schools into DB, single use only

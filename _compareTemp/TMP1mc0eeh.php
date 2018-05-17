@@ -1,5 +1,6 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: text/html; charset=utf-8'); 
+
 if (isset($_POST['email'])) {
 	include_once("workers/dbConn.php");
 	$user = new dbConn();
@@ -8,14 +9,11 @@ if (isset($_POST['email'])) {
 		$timestamp = $user->register($_POST);
 		if ($timestamp != "NULL") {
 			require_once "workers/vendor/autoload.php";
-			$link = base64_encode(json_encode(array(
-				"email" => $_POST["email"],
-				"timestamp" => $timestamp
-			)));
-			$body = '<html><body>
-				<h1>Vitajte na stránke Route to Fitness</h1>
-				<p>Na potvrdenie vašej registrácie kliknite <a href="http://147.175.98.151/RealZaverecne/confirm.php?confirm='.$link.'">sem</a></p>
-				<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>';
+
+			$body = '<html><body>';
+			$body .= "<h1>Vitajte na stránke Route to Fitness</h1>";
+			$body .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
+			$body .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
 
 			$transport = (new Swift_SmtpTransport('smtp.azet.sk', 25))
 			  ->setUsername('webte2@azet.sk')
@@ -63,7 +61,7 @@ if (isset($_POST['email'])) {
   }</style>
 </head>
 <body class="bg-dark text-white text-center">
-	<?php require("includes/navbar.php");?>
+	<?php require("includes/navbar.php"); ?>
 	<div class="container">
 		<div class="row">
 			<div class="col">

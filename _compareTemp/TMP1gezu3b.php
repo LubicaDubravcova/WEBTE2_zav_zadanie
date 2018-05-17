@@ -66,7 +66,7 @@ class DBConn {
 			return false;
 		if ($autoconfirm) $date = "NULL";
 		else $date = date("Y-m-d H:i:s"); ;
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date',NULL)");
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date')");
 
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -109,8 +109,8 @@ class DBConn {
 		return false;
 	}
 	
-	function login($data) {
-		$stmt = $this->db->prepare("SELECT id, password, confirmtime FROM $this->userTable WHERE email = ?");
+	function login($data = array()) {
+		$stmt = $this->db->prepare("SELECT id, password FROM $this->userTable WHERE email = ?");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -125,28 +125,10 @@ class DBConn {
 		}
 		$result = $stmt->get_result()->fetch_assoc();
 		$stmt->close();
-		if (!is_null($result["confirmtime"])) return true;
 		if (strcmp($result["password"],hash('sha256',$data["password"])) == 0) {
 			return $result;
 		}
 		return false;
-	}
-	
-	function activate($data){
-		$stmt = $this->db->prepare("UPDATE $this->userTable SET confirmtime = NULL WHERE email = ? AND confirmtime = ?");
-	
-		if ($stmt === false) {
-			trigger_error($this->db->error, E_USER_ERROR);
-			return;
-		}
-
-		$stmt->bind_param('ss',$data["email"],$data["timestamp"]);
-		
-		$stmt->execute();
-		$stmt->store_result();
-		$success = ($stmt->affected_rows != 0);
-		$stmt->close();
-		return $success;
 	}
 	
 	function loadSchools($file) { //Load schools into DB, single use only
@@ -351,34 +333,11 @@ class DBConn {
 		}
 
 		$stmt->bind_param('i', $routeID);
-		$status = $stmt->execute();
-		if($status === false) {
-			trigger_error($stmt->error, E_USER_ERROR);
-		}
+		$stmt->execute();
 		$result = $stmt->get_result()->fetch_assoc();
 		$stmt->close();
 
 		return $result;
-	}
-
-	function setActiveRoute($routeID) {
-    	// ziskat user ID
-		$userData = $this->getUserData();
-
-		$stmt = $this->db->prepare("UPDATE users SET ACTIVE_ROUTE = ? WHERE ID = ?");
-		if ($stmt === false) {
-			trigger_error($this->db->error, E_USER_ERROR);
-			return;
-		}
-
-		$stmt->bind_param('ii', $routeID, $userData->ID);
-		$status = $stmt->execute();
-		if($status === false) {
-			trigger_error($stmt->error, E_USER_ERROR);
-		}
-		$stmt->close();
-
-		return $userData->ID;
 	}
 
 	function loadCSV($fileName) {

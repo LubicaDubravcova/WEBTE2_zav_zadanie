@@ -9,7 +9,7 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
-$guestAllowed = array("index.php","register.php","confirm.php");//povolene stranky pre hosta
+$guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
 $userAllowed = array("index.php","displayRoute.php","news.php","addRoute.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
@@ -49,7 +49,8 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Action</a>
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
-						<div class="dropdown-divider"></div>
+                        <div class="dropdown-divider"></div>
+                        <!--nenatiahne mi tu stranku, ked je to user-->
                         <a class="dropdown-item" href="seeRoutes.php">Zoznam trás</a>
                         <div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
@@ -112,14 +113,11 @@ if (isset($_SESSION["login"])) {
 		$('#loginForm').submit(function(e){
 			e.preventDefault();
 			$.post("workers/login.php",$(this).serialize(),function(data){
-				var data = JSON.parse(data);
-				if (data == true) {
+				if (JSON.parse(data) == true) {
 					window.location.replace("index.php");
 				} else {
-					var errorMsg = 'Nesprávny e-mail alebo heslo!';
-					if (data == -1) errorMsg = 'Účet nie je aktivovaný!';
 					var email = $('#loginEmail')[0];
-					email.setCustomValidity(errorMsg);
+					email.setCustomValidity('Nesprávny e-mail alebo heslo!');
 					email.reportValidity();
 				}
 			});
