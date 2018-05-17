@@ -61,7 +61,10 @@
 			if(!$routeCreateFailed) {
 				$routeId = $dbconn->createRoute($_POST["name"], $_POST['path'], $_POST["type"], $userData->ID ,$_POST["length"]);
 
-				// TODO nastavit trasu ako aktivnu, pokial user nema aktivnu trasu (&& trasa nie je stafetova)
+				if($userData->ACTIVE_ROUTE == null) {
+					// pridam novu trasu ako aktivnu
+					$dbconn->setActiveRoute($routeId);
+				}
 			}
 		}
 		else {

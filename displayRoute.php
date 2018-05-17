@@ -7,6 +7,10 @@ $route = null;
 
 if(isset($_GET["routeId"])) {
 	$route = $db->getRouteData($_GET["routeId"]);
+	if($route == null) {
+		header('Location: index.php');
+		die();
+	}
 }
 else {
 	// presmerujem inam
@@ -32,15 +36,15 @@ else {
 	<?php
 	// overim si, ci ma uzivatel pravo trasu zobrazit
 	$routeAccess = false;
-	if($role = "admin") {
+	if($role == "admin") {
 		$routeAccess = true;
 	}
 	// trasa je public/stafeta
-	else if($route->TYPE != 1) {
+	else if($route["TYPE"] != 1) {
 		$routeAccess = true;
 	}
 	// user je vlastnikom trasy
-	else if($route->OWNDER = $userData->ID) {
+	else if($route["OWNER"] == $userData->ID) {
 		$routeAccess = true;
 	}
 
