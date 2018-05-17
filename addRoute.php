@@ -28,7 +28,7 @@
 			}
 		}
 		else {
-			$routeCreateFailed = false;
+			$routeCreateFailed = true;
 		}
 	}
 	?>
@@ -82,10 +82,10 @@
 						<input type="text" class="form-control" name="length_display" id="length_display" disabled required>
 
 						<label for="type">Typ trasy:</label>
-						<select class="form-control" id="type" name="type" <?php if ($role != "admin") {echo "disabled";}?> >
+						<select class="form-control" id="type" name="type">
 							<option value="1" selected>Súkormná trasa</option>
-							<option value="2">Verejná trasa</option>
-							<option value="3">Štafetová trasa</option>
+							<option value="2" <?php if ($role != "admin") {echo "disabled";}?> >Verejná trasa</option>
+							<option value="3" <?php if ($role != "admin") {echo "disabled";}?> >Štafetová trasa</option>
 						</select>
 
 						<input type="hidden" name="length" id="length" required>
