@@ -3,35 +3,6 @@
 <head>
 	<title>Záverečné Zadanie</title>
 	<?php require("includes/head.php");?>
-	<?php
-	// spracovanie formulara
-
-	if (isset($_POST['path'])) {
-		include_once("workers/dbConn.php");
-
-		$dbconn = new dbConn();
-
-		$routeCreateFailed = false;
-
-		// overim, ci mam vyplnene vsetky udaje
-		if(isset($_POST["length"]) && isset($_POST["type"]) && isset($_POST["name"])) {
-
-			// kontrola, ci ma user spravnu rolu na zvoleny typ trasy
-			if($_POST["type"] != "1" && $role != "admin") {
-				$routeCreateFailed = true;
-			}
-
-			if(!$routeCreateFailed) {
-				$routeId = $dbconn->createRoute($_POST["name"], $_POST['path'], $_POST["type"], $userData->ID ,$_POST["length"]);
-
-				// TODO nastavit trasu ako aktivnu, pokial user nema aktivnu trasu (&& trasa nie je stafetova)
-			}
-		}
-		else {
-			$routeCreateFailed = true;
-		}
-	}
-	?>
 	<style>
 		#map {height: 500px;}
 		.controls {
@@ -65,6 +36,35 @@
 </head>
 <body class="bg-dark text-white">
 	<?php require("includes/navbar.php"); ?>
+	<?php
+	// spracovanie formulara
+
+	if (isset($_POST['path'])) {
+		include_once("workers/dbConn.php");
+
+		$dbconn = new dbConn();
+
+		$routeCreateFailed = false;
+
+		// overim, ci mam vyplnene vsetky udaje
+		if(isset($_POST["length"]) && isset($_POST["type"]) && isset($_POST["name"])) {
+
+			// kontrola, ci ma user spravnu rolu na zvoleny typ trasy
+			if($_POST["type"] != "1" && $role != "admin") {
+				$routeCreateFailed = true;
+			}
+
+			if(!$routeCreateFailed) {
+				$routeId = $dbconn->createRoute($_POST["name"], $_POST['path'], $_POST["type"], $userData->ID ,$_POST["length"]);
+
+				// TODO nastavit trasu ako aktivnu, pokial user nema aktivnu trasu (&& trasa nie je stafetova)
+			}
+		}
+		else {
+			$routeCreateFailed = true;
+		}
+	}
+	?>
 	<div class="container text-center">
 		<div class="row">
 			<div class="col">
@@ -72,6 +72,7 @@
 			</div>
 		</div>
 		<?php if ($routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
+		<?php if (!$routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post" id="form">
