@@ -52,12 +52,21 @@ class DBConn {
 		return $alreadyExists;
 	}
 	
+	function isAdmin(){
+		if (!isset($this->admin)) {
+			if ($this->getUserData()["role"] == "admin")
+				$this->admin = true;
+			else $this->admin = false;
+		}
+		return $this->admin;
+	}
+
 	function register($data = array(),$autoconfirm = false) {
 		if($this->exists($data["email"])) 
 			return false;
-		if ($autoconfirm) $conf = "NULL";
-		else $conf = "CURRENT_TIMESTAMP";
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,$conf)");
+		if ($autoconfirm) $date = "NULL";
+		else $date = date("Y-m-d H:i:s"); ;
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date')");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -75,6 +84,7 @@ class DBConn {
 		  trigger_error($stmt->error, E_USER_ERROR);
 		}
 		$stmt->close();
+		return $date;
 	}
 	
 	function getUserData() {
@@ -192,16 +202,16 @@ class DBConn {
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 
-    function createTeam() { // vytvori team a vrati jeho ID
+    function createTeam($routeID) { // vytvori team a vrati jeho ID
         //TODO pridat na vstup trasu a vlozit ju ked bude trasa dorobena (momentalne nic take neexistuje)
-        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,1)"); //TODO miesto 1 dat "?"
+        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,?)"); //TODO miesto 1 dat "?"
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
             return;
         }
 
-        //$stmt->bind_param('si', $name, $addressID);
+        $stmt->bind_param('i', $routeID);
 
         /* Execute the prepared Statement */
         $status = $stmt->execute();
@@ -213,15 +223,16 @@ class DBConn {
         return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
     }
 
-    function addToTeam($userID, $teamID){
-        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)"); //TODO miesto 1 dat "?"
+    function addToTeam($userID, $teamID){      // prida pouzivatela do timu
+
+        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)");
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
             return;
         }
 
-        //$stmt->bind_param('si', $name, $addressID);
+        $stmt->bind_param('ii', $userID, $teamID);
 
         /* Execute the prepared Statement */
         $status = $stmt->execute();
@@ -231,6 +242,27 @@ class DBConn {
         }
         $stmt->close();
         return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+    }
+
+    function dropTeamMembers($teamID){      // prida pouzivatela do timu
+
+        $stmt = $this->db->prepare("DELETE FROM users_teams WHERE TEAM_ID=?");
+
+        if ($stmt === false) {
+            trigger_error($this->db->error, E_USER_ERROR);
+            return;
+        }
+
+        $stmt->bind_param('i',$teamID);
+
+        /* Execute the prepared Statement */
+        $status = $stmt->execute();
+        /* BK: always check whether the execute() succeeded */
+        if ($status === false) {
+            trigger_error($stmt->error, E_USER_ERROR);
+        }
+        $stmt->close();
+        return true;
     }
 	
 	private function findAddress($psc, $address) {
@@ -291,8 +323,25 @@ class DBConn {
 
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
+
+	function getRouteData($routeID) {
+    	$stmt = $this->db->prepare("SELECT PATH, LENGTH, NAME, TYPE, OWNER FROM routes WHERE ID = ?");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('i', $routeID);
+		$stmt->execute();
+		$result = $stmt->get_result()->fetch_assoc();
+		$stmt->close();
+
+		return $result;
+	}
 	
 	function loadCSV($fileName) {
+		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);
 		$csv->customHeader(array("id","firstname","surname","email","schoolname","schooladdress","address","psc","city"));
 		$data = $csv->get();
