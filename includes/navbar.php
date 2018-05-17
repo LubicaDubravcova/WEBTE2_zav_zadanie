@@ -35,7 +35,7 @@ if (isset($_SESSION["login"])) {
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
                 <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
-                <li class="nav-item"><a class="nav-link" href="users.php">Používatelia</a>
+                <li class="nav-item"><a class="nav-link" href="users.php">Užívatelia</a>
                 <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
 				<?php endif; ?>
 			</ul>

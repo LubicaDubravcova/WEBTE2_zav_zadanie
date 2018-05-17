@@ -54,7 +54,8 @@ class DBConn {
 	
 	function isAdmin(){
 		if (!isset($this->admin)) {
-			if ($this->getUserData()["role"] == "admin")
+			$data = $this->getUserData();
+			if ($data->ROLE == "admin")
 				$this->admin = true;
 			else $this->admin = false;
 		}
@@ -64,9 +65,9 @@ class DBConn {
 	function register($data = array(),$autoconfirm = false) {
 		if($this->exists($data["email"]))
 			return false;
-		if ($autoconfirm) $date = "NULL";
+		if ($autoconfirm) $date = null;
 		else $date = date("Y-m-d H:i:s"); ;
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date',NULL)");
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,?,NULL)");
 
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -74,8 +75,9 @@ class DBConn {
 		}
 		if ($data["schoolID"] == "") 
 			$data["schoolID"] = $this->addSchool($data["schoolName"],$this->getAddressID($data["schoolCity"],$data["schoolPSC"],$data["schoolAddress"]));
+		
 		$address = $this->getAddressID($data["city"],$data["PSC"],$data["address"]);
-		$stmt->bind_param('sssiis', $data["firstname"], $data["surname"], $data["email"], $data["schoolID"], $address, hash('sha256',$data["password"]));
+		$stmt->bind_param('sssiiss', $data["firstname"], $data["surname"], $data["email"], $data["schoolID"], $address, hash('sha256',$data["password"]),$date);
 
 		/* Execute the prepared Statement */
 		$status = $stmt->execute();
@@ -88,6 +90,7 @@ class DBConn {
 	}
 	
 	function getUserData() {
+		session_start();
 		$stmt = $this->db->prepare("SELECT * FROM $this->userTable WHERE id = ?");
 	
 		if ($stmt === false) {
@@ -404,7 +407,7 @@ class DBConn {
 	function loadCSV($fileName) {
 		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);
-		$csv->customHeader(array("id","firstname","surname","email","schoolname","schooladdress","address","psc","city"));
+		$csv->customHeader(array("id","surname","firstname","email","schoolname","schooladdress","address","PSC","city"));
 		$data = $csv->get();
 		foreach ($data as $user) {
 			$address = explode(", ",$user["schooladdress"]);
@@ -414,7 +417,7 @@ class DBConn {
 				"psc" => $address[2],
 				"name" => $user["schoolname"]
 			);
-			$user["school"]=$this->getSchoolID($school);
+			$user["schoolID"]=$this->getSchoolID($school);
 			$user["password"]=hash('sha256',$defaultPass);
 			$this->register($user, true);
 		}
