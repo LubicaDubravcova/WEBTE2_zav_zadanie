@@ -52,7 +52,6 @@ class DBConn {
 		return $alreadyExists;
 	}
 	
-<<<<<<< HEAD
 	function isAdmin(){
 		if (!isset($this->admin)) {
 			if ($this->getUserData()["role"] == "admin")
@@ -63,20 +62,12 @@ class DBConn {
 	}
 
 	function register($data = array(),$autoconfirm = false) {
-		if($this->exists($data["email"])) 
+		if($this->exists($data["email"]))
 			return false;
 		if ($autoconfirm) $date = "NULL";
 		else $date = date("Y-m-d H:i:s"); ;
 		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date')");
-=======
-	function register($data = array(),$autoconfirm = false) {
-		if($this->exists($data["email"])) 
-			return false;
-		if ($autoconfirm) $conf = "NULL";
-		else $conf = "CURRENT_TIMESTAMP";
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,$conf)");
->>>>>>> origin/master
-	
+
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
 		  return;
@@ -273,7 +264,7 @@ class DBConn {
         $stmt->close();
         return true;
     }
-	
+
 	private function findAddress($psc, $address) {
 		$stmt = $this->db->prepare("SELECT id FROM addresses WHERE PSC = ? AND address LIKE CONCAT('%',?)");
 	
@@ -332,7 +323,23 @@ class DBConn {
 
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
-	
+
+	function getRouteData($routeID) {
+    	$stmt = $this->db->prepare("SELECT PATH, LENGTH, NAME, TYPE, OWNER FROM routes WHERE ID = ?");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('i', $routeID);
+		$stmt->execute();
+		$result = $stmt->get_result()->fetch_assoc();
+		$stmt->close();
+
+		return $result;
+	}
+
 	function loadCSV($fileName) {
 		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);
