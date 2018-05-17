@@ -1,7 +1,10 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
 include_once("workers/dbConn.php");
-if (!isset($db)) $db = new DBConn();
-//$result = $conn->getAssoc("SELECT FIRSTNAME, SURNAME FROM users");
+$db = new DBConn();
+$database = $db->getDB();
+$sql = "SELECT FIRSTNAME, SURNAME FROM users";
+$result = $database->query($sql);
 ?>
 <!doctype html>
 <html>
@@ -19,29 +22,30 @@ if (!isset($db)) $db = new DBConn();
     </div>
     <div class="row justify-content-center bg-light text-dark rounded p-5">
         <div class="col">
-            <?php echo "<div class='table-responsive'>          
-  <table class='table'>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Meno</th>
-        <th>Priezvisko</th>
-        <th>Adresa</th>
-        <th>Škola</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  </div>"; ?>
+            <div class='table-responsive'>          
+			  	<table class='table'>
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Meno</th>
+							<th>Priezvisko</th>
+							<th>Adresa</th>
+							<th>Škola</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach($result->fetch_all(MYSQLI_ASSOC) as $user): ?>
+						<tr>
+							<td>id</td>
+							<td><?php echo $user["FIRSTNAME"]; ?></td>
+							<td><?php echo $user["SURNAME"]; ?></td>
+							<td>adresa</td>
+							<td>skola</td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
         </div>
     </div>
 </div>
