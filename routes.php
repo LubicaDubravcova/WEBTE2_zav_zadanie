@@ -2,9 +2,13 @@
 header('Content-Type: text/html; charset=utf-8');
 include_once("workers/dbConn.php");
 $db = new DBConn();
-$sql = "SELECT routes.ID, routes.NAME, routes.LENGTH, routes.TYPE,users.FIRSTNAME, users.SURNAME FROM routes 
+$sql = "SELECT routes.ID, routes.NAME, routes.LENGTH, routes.TYPE,users.FIRSTNAME, users.SURNAME, users.ACTIVE_ROUTE FROM routes 
 JOIN users ON routes.OWNER=users.ID";
 $result = $db->getResult($sql); //aby hodil error ked je chyba
+
+$sql2 = "SELECT DISTINCT users.ID, users.FIRSTNAME, users.SURNAME FROM users JOIN routes ON users.ID=routes.OWNER";
+$result2 = $db->getResult($sql2);
+
 ?>
 <!doctype html>
 <html>
@@ -38,12 +42,16 @@ $result = $db->getResult($sql); //aby hodil error ked je chyba
         }
 */
         ?>
+        <?php if ($role == "admin"): ?>
         <div class="form-group">
             <label for="sel">Užívateľ: </label>
             <select class="form-control" id="sel">
-                <option value="2" <?php if ($role != "admin") {echo "disabled";}?> > meno </option>
+                <?php foreach($result2->fetch_all(MYSQLI_ASSOC) as $user): ?>
+                <option value="$user['ID']"> <?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?> </option>
+                <?php endforeach; ?>
             </select>
         </div>
+        <?php endif; ?>
         <div class="col">
             <div class='table-responsive'>
                 <table class='table sortable'>
@@ -59,11 +67,31 @@ $result = $db->getResult($sql); //aby hodil error ked je chyba
                     <tbody>
                     <?php foreach($result->fetch_all(MYSQLI_ASSOC) as $user): ?>
                         <tr>
+                        <?php if (($role != "admin") and (($user["TYPE"] == "Verejná") or ($user["TYPE"] == "Štafetová"))): ?>
                             <td><?php echo $user["NAME"]; ?></td>
                             <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
-                            <td>aktivna/pasivna</td>
+                            <td>
+                                <?php if ($user["ACTIVE_ROUTE"]!=NULL)
+                                        echo "aktívna";
+                                    else
+                                        echo "pasívna";
+                                ?>
+                            </td>
                             <td><?php echo $user["TYPE"]; ?></td>
                             <td><?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?></td>
+                        <?php elseif ($role == "admin") :?>
+                            <td><?php echo $user["NAME"]; ?></td>
+                            <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
+                            <td>
+                                <?php if ($user["ACTIVE_ROUTE"]!=NULL)
+                                    echo "aktívna";
+                                else
+                                    echo "pasívna";
+                                ?>
+                            </td>
+                            <td><?php echo $user["TYPE"]; ?></td>
+                            <td><?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?></td>
+                        <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -76,4 +104,3 @@ $result = $db->getResult($sql); //aby hodil error ked je chyba
 <script src="scripts/sorttable.js"></script>
 </body>
 </html>
-
