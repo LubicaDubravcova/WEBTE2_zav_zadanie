@@ -9,8 +9,8 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
-$guestAllowed = array("index.php","register.php","confirm.php");//povolene stranky pre hosta
-$userAllowed = array("index.php","displayRoute.php","news.php","addRoute.php");//povolene stranky pre prihlaseneho pouzivatela
+$guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
+$userAllowed = array("index.php","route.php","news.php","add-route.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
 if (isset($_SESSION["login"])) {
@@ -33,10 +33,10 @@ if (isset($_SESSION["login"])) {
 			<ul class="navbar-nav"> <!-- lave menu -->
 				<li class="nav-item"><a class="nav-link" href="index.php">Domov</a>
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
-				<li class="nav-item"><a class="nav-link" href="addRoute.php">Vytvoriť trasu</a>
-				<li class="nav-item"><a class="nav-link" href="#">Lorem Ipsum</a>
+                <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
-				<li class="nav-item"><a class="nav-link" href="seeUsers.php">Používatelia</a>
+                <li class="nav-item"><a class="nav-link" href="users.php">Používatelia</a>
+                <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
 				<?php endif; ?>
 			</ul>
 			<ul class="navbar-nav ml-auto"> <!-- prave menu -->
@@ -44,12 +44,8 @@ if (isset($_SESSION["login"])) {
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $userData->FIRSTNAME." ".$userData->SURNAME;?></a>
 					<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
-						<a class="dropdown-item" href="#">Action</a>
-						<a class="dropdown-item" href="#">Another action</a>
-						<a class="dropdown-item" href="#">Something else here</a>
+						<a class="dropdown-item" href="routes.php">Vytvoriť trasu</a>
 						<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="seeRoutes.php">Zoznam trás</a>
-                        <div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>
@@ -57,13 +53,8 @@ if (isset($_SESSION["login"])) {
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $userData->FIRSTNAME." ".$userData->SURNAME." (administrátor)";?></a>
 					<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
-						<a class="dropdown-item" href="#">Action</a>
-						<a class="dropdown-item" href="#">Another action</a>
-						<a class="dropdown-item" href="#">Something else here</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
-						<a class="dropdown-item" href="addCSV.php">Pridaj používateľov</a>
-                        <a class="dropdown-item" href="seeRoutes.php">Zoznam trás</a>
+						<a class="dropdown-item" href="add-route.php">Vytvoriť trasu</a>
+						<a class="dropdown-item" href="add-news.php">Pridaj aktualitu</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
@@ -110,14 +101,11 @@ if (isset($_SESSION["login"])) {
 		$('#loginForm').submit(function(e){
 			e.preventDefault();
 			$.post("workers/login.php",$(this).serialize(),function(data){
-				var data = JSON.parse(data);
-				if (data == true) {
+				if (JSON.parse(data) == true) {
 					window.location.replace("index.php");
 				} else {
-					var errorMsg = 'Nesprávny e-mail alebo heslo!';
-					if (data == -1) errorMsg = 'Účet nie je aktivovaný!';
 					var email = $('#loginEmail')[0];
-					email.setCustomValidity(errorMsg);
+					email.setCustomValidity('Nesprávny e-mail alebo heslo!');
 					email.reportValidity();
 				}
 			});
