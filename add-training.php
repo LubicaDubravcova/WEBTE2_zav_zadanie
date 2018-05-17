@@ -39,41 +39,60 @@
 	<?php
 	// spracovanie formulara
 
-	$routeCreationAttempted = false;
+	$trainingCreationAttempted = false;
 
-	// TODO spracovanie pridania
-	/*
-	if (isset($_POST['path'])) {
-		$routeCreationAttempted = true;
+	if (isset($_POST['length'])) {
+		$trainingCreationAttempted = true;
 
 		include_once("workers/dbConn.php");
 
 		$dbconn = new dbConn();
 
-		$routeCreateFailed = false;
+		$trainingCreateFailed = false;
 
-		// overim, ci mam vyplnene vsetky udaje
-		if(isset($_POST["length"]) && isset($_POST["type"]) && isset($_POST["name"])) {
-
-			// kontrola, ci ma user spravnu rolu na zvoleny typ trasy
-			if($_POST["type"] != "1" && $role != "admin") {
-				$routeCreateFailed = true;
+		// kontrola, ci mam zvolenu aktivnu trasu
+		if($userData->ACTIVE_ROUTE != null) {
+			// pridam trening do DB
+			$date = null;
+			if(isset($_POST['date']) && $_POST['date'] != "") {
+				$date = $_POST['date'];
+			}
+			$time_start = null;
+			if(isset($_POST['time_start']) && $_POST['time_start'] != "") {
+				$time_start = $_POST['time_start'];
+			}
+			$time_end = null;
+			if(isset($_POST['time_end']) && $_POST['time_end'] != "") {
+				$time_end = $_POST['time_end'];
+			}
+			$lat_start = null;
+			if(isset($_POST['lat_start']) && $_POST['lat_start'] != "") {
+				$lat_start = $_POST['lat_start'];
+			}
+			$lng_start = null;
+			if(isset($_POST['lng_start']) && $_POST['lng_start'] != "") {
+				$lng_start = $_POST['lng_start'];
+			}
+			$lat_end = null;
+			if(isset($_POST['lat_end']) && $_POST['lat_end'] != "") {
+				$lat_end = $_POST['lat_end'];
+			}
+			$lng_end = null;
+			if(isset($_POST['lng_end']) && $_POST['lng_end'] != "") {
+				$lng_end = $_POST['lng_end'];
+			}
+			$rating = null;
+			if(isset($_POST['rating']) && $_POST['rating'] != "") {
+				$rating = $_POST['rating'];
+			}
+			$note = null;
+			if(isset($_POST['notes']) && $_POST['notes'] != "") {
+				$note = $_POST['notes'];
 			}
 
-			if(!$routeCreateFailed) {
-				$routeId = $dbconn->createRoute($_POST["name"], $_POST['path'], $_POST["type"], $userData->ID ,$_POST["length"]);
-
-				if($userData->ACTIVE_ROUTE == null) {
-					// pridam novu trasu ako aktivnu
-					$dbconn->setActiveRoute($routeId);
-				}
-			}
-		}
-		else {
-			$routeCreateFailed = true;
+			$dbconn->addTraining($_POST['length'], $date, $time_start, $time_end, $lat_start, $lng_start, $lat_end, $lng_end, $rating, $note, $userData->ID, $userData->ACTIVE_ROUTE);
 		}
 	}
-	*/
 	?>
 	<div class="container text-center">
 		<div class="row">
@@ -81,16 +100,19 @@
 				<h2 class="m-4 d-inline-block">Pridanie tréningu</h2>
 			</div>
 		</div>
+		<?php if($userData->ACTIVE_ROUTE == null): ?>
+			<div class='row'><div class='btn btn-block btn-danger disabled'>Nie je možné pridať tréning, pokým si nezvolíte aktívnu trasu.</div></div>
+		<?php else: ?>
 		<!--
-		<?php if ($routeCreationAttempted && $routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
-		<?php if ($routeCreationAttempted && !$routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
+		<?php if ($trainingCreationAttempted && $trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
+		<?php if ($trainingCreationAttempted && !$trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
 		-->
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
 					<div class="form-group">
 						<label for="length_km">Dĺžka prekonanej trasy [km]:</label>
-						<input type="number" step="any" min="0" class="form-control" name="length_km" id="length_km" required placeholder="Zadajte dĺžku trasy v km" onchange="kmChange">
+						<input type="number" step="any" min="0" class="form-control" name="length_km" id="length_km" required placeholder="Zadajte dĺžku trasy v km" onchange="kmChange()">
 						<input type="hidden" name="length" id="length" required>
 					</div>
 
@@ -130,6 +152,7 @@
 				</form>
 			</div>
 		</div>
+		<?php endif; ?>
 	</div>
 	<?php require("includes/footer.php");?>
 	<script>
