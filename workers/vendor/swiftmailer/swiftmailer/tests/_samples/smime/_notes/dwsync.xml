@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="sign.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="encrypt.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="sign2.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="ca.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="create-cert.sh" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="intermediate.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="encrypt.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="sign.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="CA.srl" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="encrypt2.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="intermediate.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="ca.key" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="sign2.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="encrypt2.crt" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+</dwsync>
