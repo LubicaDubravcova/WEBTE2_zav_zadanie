@@ -29,7 +29,7 @@ function AutocompleteDirectionsHandler(map) {
 	});
 
 	this.directionsDisplay.addListener('directions_changed', function() {
-		fillFormData(directionsDisplay.getDirections());
+		fillFormData(this.directionsDisplay.getDirections());
 	});
 
 
