@@ -10,7 +10,7 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
 $guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
-$userAllowed = array("index.php","routeTest.php","news.php");//povolene stranky pre prihlaseneho pouzivatela
+$userAllowed = array("index.php","routeTest.php","news.php","addRoute.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
 if (isset($_SESSION["login"])) {
