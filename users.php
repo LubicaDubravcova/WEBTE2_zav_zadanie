@@ -2,6 +2,7 @@
 header('Content-Type: text/html; charset=utf-8');
 include_once("workers/dbConn.php");
 $db = new DBConn();
+<<<<<<< HEAD
 if(isset($_FILES["file"])) {
 	if ($_FILES["file"]["error"] == UPLOAD_ERR_OK) {
 		$file = $_FILES["file"]["tmp_name"];
@@ -9,6 +10,8 @@ if(isset($_FILES["file"])) {
 		unset($file);
 	}
 }
+=======
+>>>>>>> origin/master
 $sql = "SELECT users.ID, CONCAT(users.FIRSTNAME, ' ', users.SURNAME) as NAME, CONCAT(a.ADDRESS, ', ', a.CITY) as ADDRESS, CONCAT(schools.NAME, ', ' , sa.CITY) as SCHOOL
 FROM users JOIN addresses a ON users.ADDRESS_ID=a.ID JOIN schools ON users.SCHOOL_ID=schools.ID JOIN addresses sa ON sa.ID=schools.ADDRESS_ID";
 $assoc = $db->getAssoc($sql);
@@ -50,6 +53,7 @@ $assoc = $db->getAssoc($sql);
 				<?php endforeach; ?>
 				</tbody>
 			</table>
+<<<<<<< HEAD
             <form enctype="multipart/form-data" method="post" action="#" class="form-inline">
             	<div class="col-8">
 					<div class="row">
@@ -57,6 +61,11 @@ $assoc = $db->getAssoc($sql);
 						<input type="file" class="form-control-file col" name="file" id="file" accept=".csv" required/>
 					</div>
 				</div>
+=======
+            <form method="post" action="#" class="form-inline">
+				<label for="file" class="form-control-plaintext">Načítanie CSV s užívateľmi: </label>
+				<input type="file" class="form-control-file" name="file" id="file" accept=".csv" required/>
+>>>>>>> origin/master
 				<input type="submit" class="form-control col-4"/>
 			</form>
         </div>
