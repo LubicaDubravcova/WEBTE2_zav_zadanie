@@ -52,6 +52,7 @@ class DBConn {
 		return $alreadyExists;
 	}
 	
+<<<<<<< HEAD
 	function isAdmin(){
 		if (!isset($this->admin)) {
 			if ($this->getUserData()["role"] == "admin")
@@ -67,6 +68,14 @@ class DBConn {
 		if ($autoconfirm) $date = "NULL";
 		else $date = date("Y-m-d H:i:s"); ;
 		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,'$date')");
+=======
+	function register($data = array(),$autoconfirm = false) {
+		if($this->exists($data["email"])) 
+			return false;
+		if ($autoconfirm) $conf = "NULL";
+		else $conf = "CURRENT_TIMESTAMP";
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,$conf)");
+>>>>>>> origin/master
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
