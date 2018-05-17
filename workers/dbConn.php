@@ -313,7 +313,7 @@ class DBConn {
 			return;
 		}
 
-		$stmt->bind_param('bdsii', $path, $length, $name, $type, $userFK);
+		$stmt->bind_param('sdsii', $path, $length, $name, $type, $userFK);
 
 		$status = $stmt->execute();
 		if($status === false) {

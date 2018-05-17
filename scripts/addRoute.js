@@ -101,5 +101,5 @@ function fillFormData(result) {
 	document.getElementById("length_display").value = distance/1000 + "km";
 
 	// ziskam si kusy ciary reprezentujucej path a vlozim do formulara
-	document.getElementById("path").value = route.overview_path;
+	document.getElementById("path").value = route.overview_polyline;
 }
