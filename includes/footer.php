@@ -51,8 +51,10 @@
 		$( document ).ready(function(){
 			$("body").css("margin-bottom", $(".footer").height() + 20 + "px");
 		});
+		<?php if ($role != false): ?>
 		$("#subCheck").change(function(){
 			$.post("workers/subscribe.php", {id : <?php echo $userData->ID;?>, sub : this.checked});
 		});
+		<?php endif; ?>
 	</script>
 </footer>

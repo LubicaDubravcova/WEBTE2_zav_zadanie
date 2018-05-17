@@ -9,8 +9,8 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
-$guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
-$userAllowed = array("index.php","routeTest.php","news.php","addRoute.php");//povolene stranky pre prihlaseneho pouzivatela
+$guestAllowed = array("index.php","register.php","addRoute.php");//povolene stranky pre hosta
+$userAllowed = array("index.php","routeTest.php","news.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
 if (isset($_SESSION["login"])) {
@@ -34,7 +34,6 @@ if (isset($_SESSION["login"])) {
 				<li class="nav-item"><a class="nav-link" href="index.php">Domov</a>
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
 				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
-				<li class="nav-item"><a class="nav-link" href="addRoute.php">Vytvoriť trasu</a>
 				<li class="nav-item"><a class="nav-link" href="#">Lorem Ipsum</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
 				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
@@ -49,6 +48,7 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
 						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>
@@ -60,9 +60,7 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
-						<a class="dropdown-item" href="addCSV.php">Pridaj používateľov</a>
-						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">And now for something completely different</a>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>

@@ -49,6 +49,7 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
 						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>
@@ -60,9 +61,7 @@ if (isset($_SESSION["login"])) {
 						<a class="dropdown-item" href="#">Another action</a>
 						<a class="dropdown-item" href="#">Something else here</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="addNews.php">Pridaj aktualitu</a>
-						<a class="dropdown-item" href="addCSV.php">Pridaj používateľov</a>
-						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="#">And now for something completely different</a>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
 				</li>

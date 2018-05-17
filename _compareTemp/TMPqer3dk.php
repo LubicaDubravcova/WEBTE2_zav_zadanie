@@ -17,7 +17,7 @@ class DBConn {
             }else{
 				$conn->set_charset("utf8");
                 $this->db = $conn;
-            }
+			}
         }
 	}
 	
@@ -31,22 +31,19 @@ class DBConn {
 		return substr($address,0,strrpos($address, " "))." ".substr($address,$slashPos+1);
 	}
 	
-	function truncAll() {
-		$this->db->query("SET FOREIGN_KEY_CHECKS=0");
-		$this->db->query("TRUNCATE `schools`");
-		$this->db->query("TRUNCATE `users`");
-		$this->db->query("SET FOREIGN_KEY_CHECKS=1");
+	function getDB() {
+		return $this->db;
 	}
 	
     function exists($email) {
 		$stmt = $this->db->prepare("SELECT id FROM $this->userTable WHERE email = ?");
 	
 		if ($stmt === false) {
-		  trigger_error($this->db->error, E_USER_ERROR);
-		  return;
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
 		}
 
-		$stmt->bind_param('i',$email);
+		$stmt->bind_param('s',$email);
 		
 		$stmt->execute();
 		$stmt->store_result();
@@ -55,10 +52,12 @@ class DBConn {
 		return $alreadyExists;
 	}
 	
-	function register($data = array()) {
+	function register($data = array(),$autoconfirm = false) {
 		if($this->exists($data["email"])) 
 			return false;
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user')");
+		if ($autoconfirm) $conf = "NULL";
+		else $conf = "CURRENT_TIMESTAMP";
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,$conf)");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -148,6 +147,10 @@ class DBConn {
 			return array_column($result->fetch_all(MYSQLI_ASSOC),$column);
 		return $result->fetch_all(MYSQLI_ASSOC);
 	}
+
+	function insertQuery($query){
+		$result = $this->db->query($query);
+	}
 	
 	function getSchoolID($school) { //get id of specified school, if it doesnt exist, add new.
 		$stmt = $this->db->prepare("SELECT id FROM schools WHERE ADDRESS_ID = ?");
@@ -189,16 +192,16 @@ class DBConn {
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 
-    function createTeam() { // vytvori team a vrati jeho ID
+    function createTeam($routeID) { // vytvori team a vrati jeho ID
         //TODO pridat na vstup trasu a vlozit ju ked bude trasa dorobena (momentalne nic take neexistuje)
-        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,1)"); //TODO miesto 1 dat "?"
+        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,?)"); //TODO miesto 1 dat "?"
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
             return;
         }
 
-        //$stmt->bind_param('si', $name, $addressID);
+        $stmt->bind_param('i', $routeID);
 
         /* Execute the prepared Statement */
         $status = $stmt->execute();
@@ -210,15 +213,16 @@ class DBConn {
         return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
     }
 
-    function addToTeam($userID, $teamID){
-        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)"); //TODO miesto 1 dat "?"
+    function addToTeam($userID, $teamID){      // prida pouzivatela do timu
+
+        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)");
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
             return;
         }
 
-        //$stmt->bind_param('si', $name, $addressID);
+        $stmt->bind_param('ii', $userID, $teamID);
 
         /* Execute the prepared Statement */
         $status = $stmt->execute();
@@ -228,6 +232,27 @@ class DBConn {
         }
         $stmt->close();
         return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+    }
+
+    function dropTeamMembers($teamID){      // prida pouzivatela do timu
+
+        $stmt = $this->db->prepare("DELETE FROM users_teams WHERE TEAM_ID=?");
+
+        if ($stmt === false) {
+            trigger_error($this->db->error, E_USER_ERROR);
+            return;
+        }
+
+        $stmt->bind_param('i',$teamID);
+
+        /* Execute the prepared Statement */
+        $status = $stmt->execute();
+        /* BK: always check whether the execute() succeeded */
+        if ($status === false) {
+            trigger_error($stmt->error, E_USER_ERROR);
+        }
+        $stmt->close();
+        return true;
     }
 	
 	private function findAddress($psc, $address) {
@@ -269,6 +294,25 @@ class DBConn {
 		$stmt->close();
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
+
+	function createRoute($name, $path, $type, $userFK, $length) {
+		$stmt = $this->db->prepare("INSERT INTO routes VALUES (NULL,?,?,?,?,?)");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('bdsii', $path, $length, $name, $type, $userFK);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$stmt->close();
+
+		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+	}
 	
 	function loadCSV($fileName) {
 		$csv = new CsvImporter($fileName, true);
@@ -284,7 +328,7 @@ class DBConn {
 			);
 			$user["school"]=$this->getSchoolID($school);
 			$user["password"]=hash('sha256',$defaultPass);
-			$this->register($user);
+			$this->register($user, true);
 		}
 	}
 }

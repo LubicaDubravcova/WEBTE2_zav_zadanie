@@ -1,3 +1,7 @@
+<?php 
+include_once("workers/dbConn.php");
+if (!isset($db)) $db = new DBConn();
+?>
 <!doctype html>
 <html>
 <head>

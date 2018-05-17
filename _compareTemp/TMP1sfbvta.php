@@ -31,11 +31,8 @@ class DBConn {
 		return substr($address,0,strrpos($address, " "))." ".substr($address,$slashPos+1);
 	}
 	
-	function truncAll() {
-		$this->db->query("SET FOREIGN_KEY_CHECKS=0");
-		$this->db->query("TRUNCATE `schools`");
-		$this->db->query("TRUNCATE `users`");
-		$this->db->query("SET FOREIGN_KEY_CHECKS=1");
+	function getDB() {
+		return $this->db;
 	}
 	
     function exists($email) {
@@ -52,7 +49,7 @@ class DBConn {
 		$stmt->store_result();
 		$alreadyExists = ($stmt->num_rows != 0);
 		$stmt->close();
-		return $alredyExists;
+		return $alreadyExists;
 	}
 	
 	function register($data = array()) {
@@ -192,6 +189,47 @@ class DBConn {
 		$stmt->close();
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
+
+    function createTeam() { // vytvori team a vrati jeho ID
+        //TODO pridat na vstup trasu a vlozit ju ked bude trasa dorobena (momentalne nic take neexistuje)
+        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,1)"); //TODO miesto 1 dat "?"
+
+        if ($stmt === false) {
+            trigger_error($this->db->error, E_USER_ERROR);
+            return;
+        }
+
+        //$stmt->bind_param('si', $name, $addressID);
+
+        /* Execute the prepared Statement */
+        $status = $stmt->execute();
+        /* BK: always check whether the execute() succeeded */
+        if ($status === false) {
+            trigger_error($stmt->error, E_USER_ERROR);
+        }
+        $stmt->close();
+        return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+    }
+
+    function addToTeam($userID, $teamID){
+        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)"); //TODO miesto 1 dat "?"
+
+        if ($stmt === false) {
+            trigger_error($this->db->error, E_USER_ERROR);
+            return;
+        }
+
+        //$stmt->bind_param('si', $name, $addressID);
+
+        /* Execute the prepared Statement */
+        $status = $stmt->execute();
+        /* BK: always check whether the execute() succeeded */
+        if ($status === false) {
+            trigger_error($stmt->error, E_USER_ERROR);
+        }
+        $stmt->close();
+        return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+    }
 	
 	private function findAddress($psc, $address) {
 		$stmt = $this->db->prepare("SELECT id FROM addresses WHERE PSC = ? AND address LIKE CONCAT('%',?)");
@@ -230,6 +268,25 @@ class DBConn {
 		  trigger_error($stmt->error, E_USER_ERROR);
 		}
 		$stmt->close();
+		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+	}
+
+	function createRoute($name, $path, $type, $userFK, $length) {
+		$stmt = $this->db->prepare("INSERT INTO routes VALUES (NULL,?,?,?,?,?)");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('bdsii', $path, $length, $name, $type, $userFK);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$stmt->close();
+
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 	

@@ -1,17 +1,30 @@
 <?php
 header('Content-Type: text/html; charset=utf-8'); 
 
+$message = '<html><body>';
+$message .= "<h1>Vitajte na stránke Route to Fitness</h1>";
+$message .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
+$message .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
+$headers = 'From: webmaster@147.175.98.151.nip.io' . "\r\n" .
+	'Reply-To: webmaster@147.175.98.151.nip.io' . "\r\n";
+$mailSuccess = mail("rikpat5@azet.sk","Registrácia na stránke Route to Fitness",$message,$headers);
 if (isset($_POST['email'])) {
 	include_once("workers/dbConn.php");
 	$user = new dbConn();
-	var_dump($_POST);
 	$alreadyExists = $user->exists($_POST['email']);
     if (!$alreadyExists) {
-		$user->register($_POST);
-		if ($user->login($_POST)) {
-			header('Location: index.php');
-			die();
+		$timestamp = $user->register($_POST);
+		if ($timestamp != "NULL") {
+			$message = '<html><body>';
+			$message .= "<h1>Vitajte na stránke Route to Fitness</h1>";
+			$message .= "<p>Na potvrdenie vašej registrácie kliknite <a href=147.175.98.151/RealZaverecne/confirm.php?confirm=".base64_encode($_POST["email"].$timestamp).">sem</a></p>";
+			$message .= "<p>Ak ste sa neregistrovali, tak sa ospravedlňujeme, ale nie je to naša chyba. :D</p>";
+			$headers = 'From: webmaster@147.175.98.151.nip.io' . "\r\n" .
+    			'Reply-To: webmaster@147.175.98.151.nip.io' . "\r\n";
+			mail("rikpat5@azet.sk","Registrácia na stránke Route to Fitness",$message,$headers);
 		}
+		
+
 	}
 }
 ?>
@@ -45,6 +58,7 @@ if (isset($_POST['email'])) {
 		<div class="row">
 			<div class="col">
 				<h2 class="m-4 d-inline-block">Registrácia</h2>
+				<?php echo($mailSuccess); ?>
 			</div>
 		</div>
 		<div class="row justify-content-center">
