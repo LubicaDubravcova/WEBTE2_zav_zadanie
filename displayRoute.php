@@ -7,6 +7,11 @@ $route = null;
 
 if(isset($_GET["routeId"])) {
 	$route = $db->getRouteData($_GET["routeId"]);
+	var_dump($route);
+	if($route == null) {
+		header('Location: index.php');
+		die();
+	}
 }
 else {
 	// presmerujem inam
