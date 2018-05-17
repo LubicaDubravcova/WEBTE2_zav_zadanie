@@ -39,7 +39,11 @@
 	<?php
 	// spracovanie formulara
 
+	$routeCreationAttempted = false;
+
 	if (isset($_POST['path'])) {
+		$routeCreationAttempted = true;
+
 		include_once("workers/dbConn.php");
 
 		$dbconn = new dbConn();
@@ -71,8 +75,8 @@
 				<h2 class="m-4 d-inline-block">Vytvorenie novej trasy</h2>
 			</div>
 		</div>
-		<?php if ($routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
-		<?php if (!$routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
+		<?php if ($routeCreationAttempted && $routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
+		<?php if ($routeCreationAttempted && !$routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post" id="form">
