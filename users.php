@@ -53,7 +53,7 @@ $assoc = $db->getAssoc($sql);
             <form enctype="multipart/form-data" method="post" action="#" class="form-inline">
             	<div class="col-8">
 					<div class="row">
-						<label for="file" class="col">Načítanie CSV s používateľmi: </label>
+						<label for="file" class="col">Načítanie CSV s užívateľmi: </label>
 						<input type="file" class="form-control-file col" name="file" id="file" accept=".csv" required/>
 					</div>
 				</div>
