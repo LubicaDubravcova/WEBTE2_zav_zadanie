@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="SmtpAgent.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="AbstractSmtpTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="EsmtpHandler.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="SpoolTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="LoadBalancedTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="SendmailTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="IoBuffer.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="FailoverTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="NullTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="StreamBuffer.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+<file name="EsmtpTransport.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710403970000000" remote="131710403970000000" Dst="2" />
+</dwsync>
