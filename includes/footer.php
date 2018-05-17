@@ -5,24 +5,7 @@
 			<div class="col-10">
 				<div id="newsCarousel" class="carousel slide" data-ride="carousel">
 					<div class="carousel-inner">
-						<div class="carousel-item active">
-							<div class="carousel-content">
-								<h4>News Example 1</h4>
-								<p>Takto budu vyzerat news</p>
-							</div>
-						</div>
-						<div class="carousel-item">
-							<div class="carousel-content">
-								<h4>News Example 2</h4>
-								<p>Bude tam carousel</p>
-							</div>
-						</div>
-						<div class="carousel-item">
-							<div class="carousel-content">
-								<h4>News Example 3</h4>
-								<p>Cez ajax sa bude nacitavat posledych 5, resp 3 alebo kolko chceme</p>
-							</div>
-						</div>
+						<?php include_once("../news.php") ?>
 					</div>
 					<a class="carousel-control-prev" href="#newsCarousel" role="button" data-slide="prev">
 						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
