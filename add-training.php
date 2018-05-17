@@ -111,11 +111,11 @@
 						<input type="time" name="time_end" id="time_end" class="form-control">
 
 						<label for="rating">Subjektívne hodnotenie tréningu:</label>
-						<label class="radio-inline"><input type="radio" name="rating">:&#593;</label>
-						<label class="radio-inline"><input type="radio" name="rating">:(</label>
-						<label class="radio-inline"><input type="radio" name="rating">:|</label>
-						<label class="radio-inline"><input type="radio" name="rating">:)</label>
-						<label class="radio-inline"><input type="radio" name="rating">:D</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="1">:&#593;</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="2">:(</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="3">:|</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="4">:)</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="5">:D</label>
 
 						<label for="notes">Poznámka ku tréningu:</label>
 						<textarea class="form-control" rows="3" id="notes"></textarea>
