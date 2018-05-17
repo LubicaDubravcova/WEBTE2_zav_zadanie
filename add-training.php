@@ -90,9 +90,8 @@
 				<form method="post">
 					<div class="form-group">
 						<label for="length_km">Dĺžka prekonanej trasy [km]:</label>
-						<input type="number" step="any" min="0" class="form-control" name="length_km" id="length_km" required placeholder="Zadajte dĺžku trasy v km">
+						<input type="number" step="any" min="0" class="form-control" name="length_km" id="length_km" required placeholder="Zadajte dĺžku trasy v km" onchange="kmChange">
 						<input type="hidden" name="length" id="length" required>
-						<input type="hidden" name="path" id="path" disabled>
 					</div>
 
 				<input id="origin-input" class="controls" type="text"
@@ -110,15 +109,21 @@
 						<label for="time_end">Čas konca tréningu:</label>
 						<input type="time" name="time_end" id="time_end" class="form-control">
 
-						<label for="rating">Subjektívne hodnotenie tréningu:</label>
+						<label for="rating">Subjektívne hodnotenie tréningu:</label><br>
 						<label class="radio-inline"><input type="radio" name="rating" value="1">:&#593;</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="2">:(</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="3">:|</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="4">:)</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="5">:D</label>
+						<br>
 
 						<label for="notes">Poznámka ku tréningu:</label>
 						<textarea class="form-control" rows="3" id="notes"></textarea>
+
+						<input type="hidden" name="lat_start" id="lat_start">
+						<input type="hidden" name="lng_start" id="lng_start">
+						<input type="hidden" name="lat_end" id="lat_end">
+						<input type="hidden" name="lng_end" id="lng_end">
 
 						<button type="submit" class="btn btn-default">Pridať tréning</button>
 					</div>
@@ -127,6 +132,12 @@
 		</div>
 	</div>
 	<?php require("includes/footer.php");?>
+	<script>
+		// listener nech su kilometre a metre rovnake
+		function kmChange() {
+			document.getElementById("length").value = document.getElementById("length_km").value*1000;
+		}
+	</script>
 	<script type="text/javascript" src="scripts/addRoute.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFYtNm-0hyuS4DgPLwbZ5BhbBS2_WEDdg&libraries=places&callback=initMap"
 			async defer></script>

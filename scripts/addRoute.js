@@ -96,10 +96,38 @@ function fillFormData(result) {
 	}
 
 	// vlozim do formulara
-	document.getElementById("length").value = distance;
+	// pre add-route
+	if(document.getElementById("length")) {
+		document.getElementById("length").value = distance;
+	}
 
-	document.getElementById("length_display").value = distance/1000 + "km";
+	if(document.getElementById("length_display")) {
+		document.getElementById("length_display").value = distance/1000 + "km";
+	}
 
 	// ziskam si kusy ciary reprezentujucej path a vlozim do formulara
-	document.getElementById("path").value = route.overview_polyline;
+	if(document.getElementById("path")) {
+		document.getElementById("path").value = route.overview_polyline;
+	}
+
+	// pre add-training
+	if(document.getElementById("length_km")) {
+		document.getElementById("length_km").value = distance/1000;
+	}
+
+	if(document.getElementById("lat_start")) {
+		document.getElementById("lat_start").value = route.overview_path[0].lat();
+	}
+
+	if(document.getElementById("lng_start")) {
+		document.getElementById("lng_start").value = route.overview_path[0].lng();
+	}
+
+	if(document.getElementById("lat_end")) {
+		document.getElementById("lat_end").value = route.overview_path[route.overview_path.length-1].lat();
+	}
+
+	if(document.getElementById("lng_end")) {
+		document.getElementById("lng_end").value = route.overview_path[route.overview_path.length-1].lng();
+	}
 }
