@@ -361,6 +361,7 @@ class DBConn {
 		return $result;
 	}
 
+	// nastavy aktualne prihlasenemu pouzivatelovi trasu so zadanym ID ako aktivnu
 	function setActiveRoute($routeID) {
     	// ziskat user ID
 		$userData = $this->getUserData();
@@ -379,6 +380,25 @@ class DBConn {
 		$stmt->close();
 
 		return $userData->ID;
+	}
+
+	function addTraining($length, $date = null, $time_start = null, $time_end = null, $lat_start = null, $lng_start = null, $lat_end = null, $lng_end = null, $rating = null, $note = null, $userID, $routeID) {
+		$stmt = $this->db->prepare("INSERT INTO `trainings`VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('dsssddddisii', $length, $date, $time_start, $time_end, $lat_start, $lng_start, $lat_end, $lng_end, $rating, $note, $userID, $routeID);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$stmt->close();
+
+		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 
 	function loadCSV($fileName) {

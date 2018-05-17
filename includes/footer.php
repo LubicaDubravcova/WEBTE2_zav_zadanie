@@ -5,7 +5,25 @@
 			<div class="col-10">
 				<div id="newsCarousel" class="carousel slide" data-ride="carousel">
 					<div class="carousel-inner">
-						<?php include_once("../news.php") ?>
+					<?php $res2 = $db->getDB()->query("SELECT ID, Nazov, Text FROM news ORDER BY id DESC");
+					$first = true;
+					for($i = 0; $i<3; $i++):
+						if (($obj = $res2->fetch_object()) == false) break; ?>
+						<div class="carousel-item <?php if ($first) {echo "active", $first = false;} ?>">
+							<a style="text-dark" href="news.php?news=<?php echo $obj->ID;?>"><div class="carousel-content">
+								<h4><?php echo $obj->Nazov; ?></h4>
+								<p>
+								<?php $lines = explode("\n", $obj->Text);
+									if (count($lines) > 1) {
+										$text = $lines[0]."\n".$lines[1];
+									} else $text = $lines[0];
+									if (strlen($text) > 200) $text = substr($text,0,200)."...";
+									echo $text;
+								?>
+								</p>
+							</div></a>
+						</div>
+					<?php endfor; ?>
 					</div>
 					<a class="carousel-control-prev" href="#newsCarousel" role="button" data-slide="prev">
 						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
