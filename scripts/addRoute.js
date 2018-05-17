@@ -98,6 +98,8 @@ function fillFormData(result) {
 	// vlozim do formulara
 	document.getElementById("length").value = distance;
 
+	document.getElementById("length_display").value = distance/1000 + "km";
+
 	// ziskam si kusy ciary reprezentujucej path a vlozim do formulara
 	document.getElementById("path").value = route.overview_path;
 }
