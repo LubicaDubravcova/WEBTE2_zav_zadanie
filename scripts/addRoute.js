@@ -1,4 +1,5 @@
 // autocomplete directions podla: https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-directions
+// draggable directions podla: https://developers.google.com/maps/documentation/javascript/examples/directions-draggable
 
 function initMap() {
 	var map = new google.maps.Map(document.getElementById('map'), {
@@ -21,7 +22,11 @@ function AutocompleteDirectionsHandler(map) {
 	var originInput = document.getElementById('origin-input');
 	var destinationInput = document.getElementById('destination-input');
 	this.directionsService = new google.maps.DirectionsService;
-	this.directionsDisplay = new google.maps.DirectionsRenderer;
+	this.directionsDisplay = new google.maps.DirectionsRenderer({
+		draggable: true,
+		map: map,
+		//panel: document.getElementById('right-panel')
+	});
 	this.directionsDisplay.setMap(map);
 
 	var originAutocomplete = new google.maps.places.Autocomplete(

@@ -42,25 +42,26 @@
 				<h2 class="m-4 d-inline-block">Vytvorenie novej trasy</h2>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
 					<div class="form-group">
 						<label for="name">Názov trasy:</label>
 						<input type="text" class="form-control" name="name" id="name">
+						<label for="length">Dĺžka trasy v metroch:</label>
+						<input type="text" class="form-control" name="length" id="length" disabled>
 						<input type="hidden" name="path" id="path">
 					</div>
 				</form>
-			</div>
-		</div>
-		<div class="row justify-content-center bg-light text-dark rounded p-5">
-			<div class="col">
+
 				<input id="origin-input" class="controls" type="text"
 					   placeholder="Zadajte začiatok trasy">
 
 				<input id="destination-input" class="controls" type="text"
 					   placeholder="Zadajte koniec trasy">
 				<div id="map" class="w-100"></div>
+
+
 			</div>
 		</div>
 	</div>
