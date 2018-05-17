@@ -118,7 +118,7 @@
 						<label class="radio-inline"><input type="radio" name="rating">:D</label>
 
 						<label for="notes">Poznámka ku tréningu:</label>
-						<textarea class="form-control" rows="š" id="notes"></textarea>
+						<textarea class="form-control" rows="3" id="notes"></textarea>
 
 						<button type="submit" class="btn btn-default">Pridať tréning</button>
 					</div>
