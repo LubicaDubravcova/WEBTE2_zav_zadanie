@@ -3,6 +3,35 @@
 <head>
 	<title>Záverečné Zadanie</title>
 	<?php require("includes/head.php");?>
+	<?php
+	// spracovanie formulara
+
+	if (isset($_POST['path'])) {
+		include_once("workers/dbConn.php");
+
+		$dbconn = new dbConn();
+
+		$routeCreateFailed = false;
+
+		// overim, ci mam vyplnene vsetky udaje
+		if(isset($_POST["length"]) && isset($_POST["type"]) && isset($_POST["name"])) {
+
+			// kontrola, ci ma user spravnu rolu na zvoleny typ trasy
+			if($_POST["type"] != "1" && $role != "admin") {
+				$routeCreateFailed = true;
+			}
+
+			if(!$routeCreateFailed) {
+				$routeId = $dbconn->createRoute($_POST["name"], $_POST['path'], $_POST["type"], $userData->ID ,$_POST["length"]);
+
+				// TODO nastavit trasu ako aktivnu, pokial user nema aktivnu trasu (&& trasa nie je stafetova)
+			}
+		}
+		else {
+			$routeCreateFailed = false;
+		}
+	}
+	?>
 	<style>
 		#map {height: 500px;}
 		.controls {
@@ -42,14 +71,23 @@
 				<h2 class="m-4 d-inline-block">Vytvorenie novej trasy</h2>
 			</div>
 		</div>
+		<?php if ($routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
 					<div class="form-group">
 						<label for="name">Názov trasy:</label>
-						<input type="text" class="form-control" name="name" id="name" required>
+						<input type="text" class="form-control" name="name" id="name" required placeholder="Zadajte názov trasy">
 						<label for="length_display">Dĺžka trasy:</label>
 						<input type="text" class="form-control" name="length_display" id="length_display" disabled required>
+
+						<label for="type">Typ trasy:</label>
+						<select class="form-control" id="type" name="type" <?php if ($role != "admin") {echo "disabled";}?> >
+							<option value="1" selected>Súkormná trasa</option>
+							<option value="2">Verejná trasa</option>
+							<option value="3">Štafetová trasa</option>
+						</select>
+
 						<input type="hidden" name="length" id="length" required>
 						<input type="hidden" name="path" id="path" required>
 					</div>

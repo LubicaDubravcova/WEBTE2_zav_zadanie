@@ -270,6 +270,25 @@ class DBConn {
 		$stmt->close();
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
+
+	function createRoute($name, $path, $type, $userFK, $length) {
+		$stmt = $this->db->prepare("INSERT INTO routes VALUES (NULL,?,?,?,?,?)");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('bdsii', $path, $length, $name, $type, $userFK);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$stmt->close();
+
+		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
+	}
 	
 	function loadCSV($fileName) {
 		$csv = new CsvImporter($fileName, true);
