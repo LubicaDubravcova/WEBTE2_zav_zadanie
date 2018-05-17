@@ -162,6 +162,16 @@ class DBConn {
 		}
 	}
 	
+	function getResult($query) {
+		$result = $this->db->query($query);
+
+		if ($result === false) {
+		  trigger_error($this->db->error, E_USER_ERROR);
+		  return;
+		}
+		return $result;
+	}
+	
 	function getAssoc($query, $column = false, $singleLine = false) { //Get assoc from DB based on query, params: $query - query to execute, $column - returns single column as an array, $singleLine - returns single row, if combined with $column, returns single value
 		$result = $this->db->query($query);
 
