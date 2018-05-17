@@ -9,7 +9,7 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
-$guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
+$guestAllowed = array("index.php","register.php","confirm.php");//povolene stranky pre hosta
 $userAllowed = array("index.php","displayRoute.php","news.php","addRoute.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
@@ -33,12 +33,10 @@ if (isset($_SESSION["login"])) {
 			<ul class="navbar-nav"> <!-- lave menu -->
 				<li class="nav-item"><a class="nav-link" href="index.php">Domov</a>
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
-				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
 				<li class="nav-item"><a class="nav-link" href="addRoute.php">Vytvoriť trasu</a>
 				<li class="nav-item"><a class="nav-link" href="#">Lorem Ipsum</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
-				<li class="nav-item"><a class="nav-link" href="routeTest.php">Test Trás</a>
-                <li class="nav-item"><a class="nav-link" href="seeUsers.php">Používatelia</a>
+				<li class="nav-item"><a class="nav-link" href="seeUsers.php">Používatelia</a>
 				<?php endif; ?>
 			</ul>
 			<ul class="navbar-nav ml-auto"> <!-- prave menu -->
@@ -112,11 +110,14 @@ if (isset($_SESSION["login"])) {
 		$('#loginForm').submit(function(e){
 			e.preventDefault();
 			$.post("workers/login.php",$(this).serialize(),function(data){
-				if (JSON.parse(data) == true) {
+				var data = JSON.parse(data);
+				if (data == true) {
 					window.location.replace("index.php");
 				} else {
+					var errorMsg = 'Nesprávny e-mail alebo heslo!';
+					if (data == -1) errorMsg = 'Účet nie je aktivovaný!';
 					var email = $('#loginEmail')[0];
-					email.setCustomValidity('Nesprávny e-mail alebo heslo!');
+					email.setCustomValidity(errorMsg);
 					email.reportValidity();
 				}
 			});
