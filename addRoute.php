@@ -3,8 +3,6 @@
 <head>
 	<title>Záverečné Zadanie</title>
 	<?php require("includes/head.php");?>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFYtNm-0hyuS4DgPLwbZ5BhbBS2_WEDdg&libraries=places"></script>
-	<script src="scripts/markerclusterer.js"></script>
 	<style>
 		#map {height: 500px;}
 		.controls {
@@ -66,8 +64,10 @@
 			</div>
 		</div>
 	</div>
-	<?php require("includes/footer.php");?>
+	<?php// require("includes/footer.php");?>
 	<script type="text/javascript" src="scripts/addRoute.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFYtNm-0hyuS4DgPLwbZ5BhbBS2_WEDdg&libraries=places&callback=initMap"
+			async defer></script>
 </body>
 </html>
 
