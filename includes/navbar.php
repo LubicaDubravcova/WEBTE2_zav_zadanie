@@ -44,7 +44,7 @@ if (isset($_SESSION["login"])) {
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $userData->FIRSTNAME." ".$userData->SURNAME;?></a>
 					<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
-						<a class="dropdown-item" href="routes.php">Vytvoriť trasu</a>
+						<a class="dropdown-item" href="add-route.php">Vytvoriť trasu</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
