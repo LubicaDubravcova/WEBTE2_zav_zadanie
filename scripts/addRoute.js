@@ -92,7 +92,7 @@ function fillFormData(result) {
 	var distance = 0.0;
 	// nascitam celkovu vzdialenost usekov
 	for (var i = 0; i < route.legs.length; i++) {
-		distance += myroute.legs[i].distance.value;
+		distance += route.legs[i].distance.value;
 	}
 
 	// vlozim do formulara
