@@ -85,6 +85,7 @@
 			if(isset($_POST['rating']) && $_POST['rating'] != "") {
 				$rating = $_POST['rating'];
 			}
+
 			$note = null;
 			if(isset($_POST['notes']) && $_POST['notes'] != "") {
 				$note = $_POST['notes'];
@@ -103,10 +104,8 @@
 		<?php if($userData->ACTIVE_ROUTE == null): ?>
 			<div class='row'><div class='btn btn-block btn-danger disabled'>Nie je možné pridať tréning, pokým si nezvolíte aktívnu trasu.</div></div>
 		<?php else: ?>
-		<!--
 		<?php if ($trainingCreationAttempted && $trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
 		<?php if ($trainingCreationAttempted && !$trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Trasa bola úspešne pridaná.</div></div>"?>
-		-->
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
@@ -140,7 +139,7 @@
 						<br>
 
 						<label for="notes">Poznámka ku tréningu:</label>
-						<textarea class="form-control" rows="3" id="notes"></textarea>
+						<textarea class="form-control" rows="3" name="notes" id="notes" maxlength="200"></textarea>
 
 						<input type="hidden" name="lat_start" id="lat_start">
 						<input type="hidden" name="lng_start" id="lng_start">
