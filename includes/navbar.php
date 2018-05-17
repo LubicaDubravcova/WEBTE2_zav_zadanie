@@ -10,7 +10,7 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
 $guestAllowed = array("index.php","register.php");//povolene stranky pre hosta
-$userAllowed = array("index.php","route.php","news.php","add-route.php");//povolene stranky pre prihlaseneho pouzivatela
+$userAllowed = array("index.php","route.php","news.php","add-route.php", "add-training.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
 if (isset($_SESSION["login"])) {
@@ -45,6 +45,7 @@ if (isset($_SESSION["login"])) {
 					<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $userData->FIRSTNAME." ".$userData->SURNAME;?></a>
 					<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
 						<a class="dropdown-item" href="add-route.php">Vytvoriť trasu</a>
+						<a class="dropdown-item" href="add-training.php">Pridať tréning</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
 					</div>
@@ -54,6 +55,8 @@ if (isset($_SESSION["login"])) {
 					<a class="nav-link dropdown-toggle" href="#" id="navbarLoginMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $userData->FIRSTNAME." ".$userData->SURNAME." (administrátor)";?></a>
 					<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
 						<a class="dropdown-item" href="add-route.php">Vytvoriť trasu</a>
+						<a class="dropdown-item" href="add-training.php">Pridať tréning</a>
+						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="add-news.php">Pridaj aktualitu</a>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="workers/logout.php">Odhlásenie</a>
