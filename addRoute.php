@@ -74,7 +74,7 @@
 		<?php if ($routeCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Trasu sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
-				<form method="post">
+				<form method="post" id="form">
 					<div class="form-group">
 						<label for="name">Názov trasy:</label>
 						<input type="text" class="form-control" name="name" id="name" required placeholder="Zadajte názov trasy">
@@ -100,6 +100,7 @@
 					   placeholder="Zadajte koniec trasy">
 				<div id="map" class="w-100"></div>
 
+				<button type="submit" class="btn btn-default" form="form">Pridať trasu</button>
 
 			</div>
 		</div>

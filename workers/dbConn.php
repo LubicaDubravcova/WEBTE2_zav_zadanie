@@ -17,7 +17,7 @@ class DBConn {
             }else{
 				$conn->set_charset("utf8");
                 $this->db = $conn;
-            }
+			}
         }
 	}
 	
@@ -39,11 +39,11 @@ class DBConn {
 		$stmt = $this->db->prepare("SELECT id FROM $this->userTable WHERE email = ?");
 	
 		if ($stmt === false) {
-		  trigger_error($this->db->error, E_USER_ERROR);
-		  return;
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
 		}
 
-		$stmt->bind_param('i',$email);
+		$stmt->bind_param('s',$email);
 		
 		$stmt->execute();
 		$stmt->store_result();
@@ -52,10 +52,12 @@ class DBConn {
 		return $alreadyExists;
 	}
 	
-	function register($data = array()) {
+	function register($data = array(),$autoconfirm = false) {
 		if($this->exists($data["email"])) 
 			return false;
-		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user')");
+		if ($autoconfirm) $conf = "NULL";
+		else $conf = "CURRENT_TIMESTAMP";
+		$stmt = $this->db->prepare("INSERT INTO $this->userTable VALUES (NULL,?,?,?,?,?,?,'user',false,$conf)");
 	
 		if ($stmt === false) {
 		  trigger_error($this->db->error, E_USER_ERROR);
@@ -304,7 +306,7 @@ class DBConn {
 			);
 			$user["school"]=$this->getSchoolID($school);
 			$user["password"]=hash('sha256',$defaultPass);
-			$this->register($user);
+			$this->register($user, true);
 		}
 	}
 }
