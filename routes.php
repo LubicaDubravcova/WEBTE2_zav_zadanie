@@ -38,10 +38,14 @@
 <?php require("includes/footer.php");?>
 <script src="scripts/sorttable.js"></script>
 <script type="text/javascript">
-	
 function reloadContent() {
 	$("#load").load("workers/routes.php");
+	console.log("reloaded");
 }
+$(document).on("click", '.routeSelector', function(event) {
+	console.log("clicked");
+    $.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){if (data == "1") reloadContent()});
+});
 $(document).ready(function(){
 	reloadContent();
 	setInterval(reloadContent,5000);

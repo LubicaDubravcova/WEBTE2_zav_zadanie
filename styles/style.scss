@@ -82,7 +82,18 @@ body {
 	cursor: pointer;
 	user-select: none;
 }
-
+.routeSelector {
+	cursor:pointer;
+	display:block;
+	background-image: url("../images/red-dot.png");
+	background-size: contain;
+	margin:auto;
+	width:25px;
+	height:25px;
+}
+.routeSelector.selected{
+	background-image: url("../images/green-dot.png");
+}
 @media only screen and (max-width: 1000px) {
     .footer {
 		position: absolute;
