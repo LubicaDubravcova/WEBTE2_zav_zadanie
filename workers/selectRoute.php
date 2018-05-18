@@ -9,6 +9,7 @@ $userData = $db->getUserData($_POST['id']);
 if($userData->ACTIVE_ROUTE == $_POST['route']) {
 	$db->resetActiveRouteForUser($_POST['id']);
 	echo true;
+	die();
 }
 else {
 	// zistit info o trase (jej typ)
@@ -23,6 +24,7 @@ else {
 			$query = "UPDATE users SET ACTIVE_ROUTE=".$_POST['route']." WHERE ID = ".$_POST['id'];
 			$res = $db->getResult($query);
 			echo $res;
+			die();
 		}
 	}
 	else if($routeData["TYPE"] == "Verejná") {
@@ -38,6 +40,7 @@ else {
 				$query = "UPDATE users SET ACTIVE_ROUTE=".$_POST['route']." WHERE ID = ".$_POST['id'];
 				$res = $db->getResult($query);
 				echo $res;
+				die();
 			}
 		}
 		else {
@@ -45,6 +48,7 @@ else {
 			$query = "UPDATE users SET ACTIVE_ROUTE=".$_POST['route']." WHERE ID = ".$_POST['id'];
 			$res = $db->getResult($query);
 			echo $res;
+			die();
 		}
 	}
 	else if($routeData["TYPE"] == "Štafeta") {
@@ -60,10 +64,14 @@ else {
 					$query = "UPDATE users SET ACTIVE_ROUTE=".$_POST['route']." WHERE ID = ".$_POST['id'];
 					$res = $db->getResult($query);
 					echo $res;
+					die();
 				}
 			}
 		}
 		// ak je null nemozem ho pridat, lebo nema tim
 	}
 }
+
+// neuspech
+echo false;
 ?>
