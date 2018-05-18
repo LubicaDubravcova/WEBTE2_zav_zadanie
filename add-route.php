@@ -91,7 +91,7 @@
 
 						<label for="type">Typ trasy:</label>
 						<select class="form-control" id="type" name="type">
-							<option value="1" selected>Súkormná trasa</option>
+							<option value="1" selected>Súkromná trasa</option>
 							<option value="2" <?php if ($role != "admin") {echo "disabled";}?> >Verejná trasa</option>
 							<option value="3" <?php if ($role != "admin") {echo "disabled";}?> >Štafetová trasa</option>
 						</select>
