@@ -12,7 +12,23 @@
             <h2 class="m-4 d-inline-block">Zoznam trás</h2>
         </div>
     </div>
+
     <div class="row justify-content-center bg-light text-dark rounded p-5">
+        <?php if ($role == "admin") :?>
+            <div class="container">
+                <form class="form-horizontal" action="routes.php">
+                    <div class="form-group">
+                        <label for="sel1">Užívateľ: </label>
+                        <select class="form-control" id="sel1">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        <?php endif; ?>
         <div class="col">
             <div class='table-responsive'>
                 <table class='table sortable table-hover'>
@@ -20,7 +36,7 @@
                     <tr>
                         <th>Trasa</th>
                         <th class="sorttable_numeric">Dĺžka</th>
-                        <th class="sorttable_nosort">Aktívna</th>
+                        <th>Aktívna</th>
                         <th>Mód</th>
                         <?php if ($role == "admin") :?>
                         <th>Pridal</th>
