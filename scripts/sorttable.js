@@ -493,6 +493,6 @@ var forEach = function(object, block, context) {
 	}
 };
 
-$(".clickable-row").click(function() {
+$(document).on("click", '.clickable-row', function() {
 	window.location = $(this).data("href");
 });

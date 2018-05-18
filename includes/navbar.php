@@ -9,8 +9,8 @@ function banish() { //presmerovanie ak je v inej stranke nez ma povolene
 
 //---------- Nastavenia povolenych stranok -----------//
 $currentSite = basename($_SERVER['PHP_SELF']);
-$guestAllowed = array("index.php","register.php","confirm.php");//povolene stranky pre hosta
-$userAllowed = array("index.php","route.php","news.php","add-route.php", "add-training.php","routes.php", 'trainings.php');//povolene stranky pre prihlaseneho pouzivatela
+$guestAllowed = array("index.php","register.php","confirm.php","documentation.php");//povolene stranky pre hosta
+$userAllowed = array("index.php","route.php","news.php","add-route.php", "add-training.php","routes.php", "trainings.php","documentation.php");//povolene stranky pre prihlaseneho pouzivatela
 
 //--------------- Ziskanie dat z DB ---------------//
 if (isset($_SESSION["login"])) {
@@ -32,6 +32,7 @@ if (isset($_SESSION["login"])) {
 		<div class="collapse navbar-collapse" id="navbarNavDropdown">
 			<ul class="navbar-nav"> <!-- lave menu -->
 				<li class="nav-item"><a class="nav-link" href="index.php">Domov</a>
+                <li class="nav-item"><a class="nav-link" href="documentation.php">Dokumentácia</a>
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
                 <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
                 <li class="nav-item"><a class="nav-link" href="trainings.php">Tréningy</a>

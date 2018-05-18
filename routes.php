@@ -19,8 +19,8 @@
                     <thead>
                     <tr>
                         <th>Trasa</th>
-                        <th>Dĺžka</th>
-                        <th>Aktívna</th>
+                        <th class="sorttable_numeric">Dĺžka</th>
+                        <th class="sorttable_nosort">Aktívna</th>
                         <th>Mód</th>
                         <?php if ($role == "admin") :?>
                         <th>Pridal</th>
@@ -39,11 +39,22 @@
 <script src="scripts/sorttable.js"></script>
 <script type="text/javascript">
 function reloadContent() {
-	$("#load").load("workers/routes.php");
-	console.log("reloaded");
+	$("#load").load("workers/routes.php",function() {
+		var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
+		if(th != undefined) {
+			if ($(th).hasClass("sorttable_sorted")) {
+				$(th).removeClass("sorttable_sorted");
+				sorttable.innerSortFunction.apply(th, []);
+			} else {
+				$(th).removeClass("sorttable_sorted_reverse");
+				sorttable.innerSortFunction.apply(th, []);
+				sorttable.innerSortFunction.apply(th, []);
+			}
+		}
+	});
 }
 $(document).on("click", '.routeSelector', function(event) {
-	console.log("clicked");
+    event.stopPropagation();
     $.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){if (data == "1") reloadContent()});
 });
 $(document).ready(function(){
