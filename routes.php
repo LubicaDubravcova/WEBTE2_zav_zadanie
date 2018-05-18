@@ -28,9 +28,9 @@ $result2 = $db->getResult($sql2);
         <?php if ($role == "admin"): ?>
         <div class="form-group">
             <label for="sel">Užívateľ: </label>
-            <select class="form-control" id="sel">
+            <select class="form-control" id="sel" onchange="MyPrint();">
                 <?php foreach($result2->fetch_all(MYSQLI_ASSOC) as $user): ?>
-                <option value="<?php $user['ID']?>"> <?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?> </option>
+                <option value="<?php echo $user["ID"]; ?>"> <?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?> </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -44,12 +44,15 @@ $result2 = $db->getResult($sql2);
                         <th>Dĺžka</th>
                         <th>Typ</th>
                         <th>Mód</th>
+                        <?php if ($role == "admin") :?>
                         <th>Pridal</th>
+                        <?php endif; ?>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach($result->fetch_all(MYSQLI_ASSOC) as $user): ?>
                         <tr>
+                            <!--ak user-->
                         <?php if (($role != "admin") and (($user["TYPE"] == "Verejná") or ($user["TYPE"] == "Štafeta"))): ?>
                             <td><?php echo $user["NAME"]; ?></td>
                             <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
@@ -61,7 +64,7 @@ $result2 = $db->getResult($sql2);
                                 ?>
                             </td>
                             <td><?php echo $user["TYPE"]; ?></td>
-                            <td><?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?></td>
+                            <!--ak admin-->
                         <?php elseif ($role == "admin") :?>
                             <td><?php echo $user["NAME"]; ?></td>
                             <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
@@ -85,5 +88,14 @@ $result2 = $db->getResult($sql2);
 </div>
 <?php require("includes/footer.php");?>
 <script src="scripts/sorttable.js"></script>
+<script type="text/javascript">
+
+    function MyPrint() {
+        var selectBox = document.getElementById("sel");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        alert(selectedValue);
+    }
+
+</script>
 </body>
 </html>
