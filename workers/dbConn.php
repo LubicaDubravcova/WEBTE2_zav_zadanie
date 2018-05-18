@@ -234,8 +234,7 @@ class DBConn {
 	}
 
     function createTeam($routeID) { // vytvori team a vrati jeho ID
-        //TODO pridat na vstup trasu a vlozit ju ked bude trasa dorobena (momentalne nic take neexistuje)
-        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,?)"); //TODO miesto 1 dat "?"
+        $stmt = $this->db->prepare("INSERT INTO teams VALUES (NULL,?)");
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
@@ -256,7 +255,7 @@ class DBConn {
 
     function addToTeam($userID, $teamID){      // prida pouzivatela do timu
 
-        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (NULL,?,?)");
+        $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (?,?)");
 
         if ($stmt === false) {
             trigger_error($this->db->error, E_USER_ERROR);
@@ -489,11 +488,7 @@ class DBConn {
 	// zaznamy su usporiadane podla LENGTH zostupne (descending)
 	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
 	function getRelayRouteProgress($routeId) {
-<<<<<<< HEAD
 		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(CONCAT(users.FIRSTNAME,\" \",users.SURNAME) SEPARATOR \", \") AS MEMBERS, COALESCE(SUM(trainings.`LENGTH`), 0) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID LEFT JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? OR `trainings`.`USER_ID` IS NULL GROUP BY users_teams.TEAM_ID ORDER BY LENGTH DESC");
-=======
-		$stmt = $this->db->prepare("SELECT team_progress.TID, MEMBERS, LENGTH FROM (SELECT users_teams.TEAM_ID AS TID, COALESCE(SUM(trainings.`LENGTH`), 0) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID LEFT JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? OR `trainings`.`USER_ID` IS NULL GROUP BY users_teams.TEAM_ID) AS team_progress JOIN (SELECT GROUP_CONCAT(CONCAT(users.FIRSTNAME, \" \", users.SURNAME) ORDER BY users.SURNAME SEPARATOR \", \") AS MEMBERS, users_teams.TEAM_ID AS TID FROM users_teams JOIN users ON users_teams.USER_ID = users.ID GROUP BY users_teams.TEAM_ID) as team_names ON team_names.TID = team_progress.TID  ORDER BY LENGTH DESC");
->>>>>>> origin/master
 
 		if ($stmt === false) {
 			trigger_error($this->db->error, E_USER_ERROR);
