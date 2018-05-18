@@ -50,6 +50,11 @@ function displayRoute(route, subdistances = []) {
 
 		// vytvorim ciary pre skratene useky
 		for(i = 0; i < subdistances.length; i++) {
+			// trasu nevykreslim ak ma 0 dlzku
+			if(subdistances[i] <= 0) {
+				break; // kedze su zoradene mozem skoncit predcasne
+			}
+
 			// najdem cast celkovej trate, ktora je uz predena
 			var bound = upperBound(cummulativeDist, 0, cummulativeDist.length-1, subdistances[i]);
 
