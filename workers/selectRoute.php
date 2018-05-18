@@ -8,6 +8,7 @@ $userData = $db->getUserData($_POST['id']);
 // overim ci chcem deaktivovat aktivnu trasu
 if($userData->ACTIVE_ROUTE == $_POST['route']) {
 	$db->resetActiveRouteForUser($_POST['id']);
+	echo true;
 }
 else {
 	// zistit info o trase (jej typ)
