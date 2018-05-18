@@ -4,6 +4,8 @@
 var directionsDisplay;
 var map;
 
+var polylines = [];
+
 // mozno nie uplne stastne, ak to budeme chciet zobrazovat do jednej mapy....
 function initMap() {
 	directionsDisplay = new google.maps.DirectionsRenderer();
@@ -99,6 +101,18 @@ function renderPath(path, color) {
 	});
 
 	newPath.setMap(map);
+
+	polylines.push(newPath);
+}
+
+// pomocna funkcia na vymazanie ciar z mapy
+function removePolylines() {
+	polylines.forEach(function (element) {
+		element.setMap(null);
+	})
+
+	// vyprazdni zoznam
+	polylines.length = 0;
 }
 
 // pomocne funkcie na vypocet vzdialenosti

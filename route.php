@@ -104,7 +104,7 @@ else {
 				<?php if($route["TYPE"] == "Verejná"): ?>
 				<div class="table-responsive">
 					<table class="table-hover">
-						<tr>
+						<tr id="header_row">
 							<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
 						</tr>
 						<?php for($i = 0; $i < count($progress["NAME"]); $i++): ?>
@@ -129,7 +129,7 @@ else {
 				<?php if($route["TYPE"] == "Štafeta"): ?>
 					<div class="table-responsive">
 						<table class="table-hover">
-							<tr>
+							<tr id="header_row">
 								<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
 							</tr>
 							<?php for($i = 0; $i < count($progress["MEMBERS"]); $i++): ?>
@@ -163,8 +163,13 @@ else {
 		// nastavenie callbecku, aby sa pri nacitani stranky spustila mapa
 		google.maps.event.addDomListener(window, "load", callback);
 
+		var encodedPath = <?php echo json_encode($route["PATH"]); ?>;
+		// dekodovanie pathu podla googlu
+		var decodedPath = google.maps.geometry.encoding.decodePath(encodedPath);
+		var routeLength = <?php echo $route["LENGTH"]; ?>;
+
 		function callback() {
-			var encodedPath = <?php echo json_encode($route["PATH"]); ?>;
+
 			var progress;
 			<?php
 				if($progress != null) {
@@ -178,9 +183,6 @@ else {
 				}
 			?>
 
-			// prekonvertujem path z encoded verzie na decoded
-			var decodedPath = google.maps.geometry.encoding.decodePath(encodedPath);
-
 			// inicializujeme  mapu
 			initMap();
 
@@ -188,6 +190,59 @@ else {
 			displayRoute(decodedPath, progress);
 		}
 	</script>
+	<?php if($route["TYPE"] != "Súkromná"): ?>
+	<script>
+		// periodicke volanie serveru o update
+		setInterval(AJAXRequst, 5000);
+
+		function AJAXRequst() {
+			// AJAX pre update tras
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					updateDisplay(JSON.parse(this.responseText));
+				}
+			};
+			xhttp.open("POST", "workers/routeData.php", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
+		}
+
+		function updateDisplay(dataArray) {
+			// prekreslenie mapy
+			removePolylines();
+			displayRoute(decodedPath, dataArray.LENGTH);
+
+			// update tabuliek
+			updateTable(dataArray)
+		}
+
+		function updateTable(dataArray) {
+			// vyprazdnit tabulku
+			var table = document.getElementById("header_row").parentElement;
+
+			while(table.childElementCount != 1) {
+				table.removeChild(table.lastElementChild);
+			}
+
+			// naplnit tabulku
+			for(var i = 0; i < dataArray.LENGTH.length; i++) {
+				table.innerHTML += "<td>" +
+					"<div class=\"legenColorBlock\" style=\"background-color: " + SUBROUTE_COLORS[i%SUBROUTE_COLORS.length] + "\"></div>" +
+					"</td>"+
+					"<td>"+
+					dataArray.<?php if($route["TYPE"] == "Verejná") echo "NAME"; else echo "MEMBERS"; ?>[i]+
+					"</td>"+
+					"<td>"+
+					dataArray.LENGTH[i]/1000 + "km"+
+					"</td>"+
+					"<td>"+
+					(dataArray.LENGTH[i]/routeLength*100) + "%"+
+					"</td>";
+			}
+		}
+	</script>
+	<?php endif; ?>
 	<?php endif; ?>
 </body>
 </html>
