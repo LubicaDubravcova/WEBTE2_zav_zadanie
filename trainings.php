@@ -34,15 +34,15 @@ if (!$id_record) {
                 <table class='table sortable table-hover'>
                     <thead>
                     <tr>
-                        <th>Trasa</th>
-                        <th>Deň</th>
-                        <th>Odjazdená vzdialenosť</th>
-                        <th>Začiatok: čas</th>
-                        <th>Koniec: čas</th>
-                        <th>Začiatok: GPS</th>
-                        <th>Koniec: GPS</th>
-                        <th>Hodnotenie</th>
-                        <th>Poznámka</th>
+                        <th data-order="NAME">Trasa</th>
+                        <th data-order="DATE">Deň</th>
+                        <th data-order="LENGTH">Odjazdená vzdialenosť</th>
+                        <th data-order="START_TIME">Začiatok: čas</th>
+                        <th data-order="END_TIME">Koniec: čas</th>
+                        <th data-order="START_LAT">Začiatok: GPS</th>
+                        <th data-order="END_LAT">Koniec: GPS</th>
+                        <th data-order="RATING">Hodnotenie</th>
+                        <th data-order="NOTES">Poznámka</th>
                         <th>Priemerná rýchlosť</th>
                     </tr>
                     </thead>
@@ -75,6 +75,15 @@ function reloadContent() {
 	$("#loadTable").load("ajax/trainings.php #loadTable tr",{user:<?php echo $id_record;?>},fixSortOnAjax);
 	$("#loadAverage").load("ajax/trainings.php #loadAverage",{user:<?php echo $id_record;?>});
 }
+$("#savepdf").click(function(e){
+	e.preventDefault();
+	var $th = $(".sorttable_sorted,.sorttable_sorted_reverse");
+	var ord = $th.data("order");
+	if ($th.hasClass("sorttable_sorted"))
+		window.location = this.href + "&order=" + ord + "&desc=desc";
+	else 
+		window.location = this.href + "&order=" + ord;
+});
 $(document).ready(function(){
 	reloadContent();
 	setInterval(reloadContent,5000);

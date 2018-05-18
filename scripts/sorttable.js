@@ -493,6 +493,20 @@ var forEach = function(object, block, context) {
 	}
 };
 
+function fixSortOnAjax() {
+	var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
+	if(th !== undefined) {
+		if ($(th).hasClass("sorttable_sorted")) {
+			$(th).removeClass("sorttable_sorted");
+			sorttable.innerSortFunction.apply(th, []);
+		} else {
+			$(th).removeClass("sorttable_sorted_reverse");
+			sorttable.innerSortFunction.apply(th, []);
+			sorttable.innerSortFunction.apply(th, []);
+		}
+	}
+}
+
 $(document).on("click", '.clickable-row', function() {
 	window.location = $(this).data("href");
 });
