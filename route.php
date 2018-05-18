@@ -127,7 +127,7 @@ else {
 					</div>
 				</div>
 				<?php endif; ?>
-				<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+				<?php if($route["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
 				<div class="row my-4">
 					<a class="btn" href="add-team.php?routeID=<?php echo $_POST["routeId"]; ?>">Pridať tím</a>
 				</div>
