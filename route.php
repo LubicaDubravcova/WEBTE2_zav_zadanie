@@ -92,7 +92,11 @@ else {
 				</div>
 				<div class="row my-4">
 					<div class="col">
-						<h3 class="m-4 d-inline-block">Prekonaná časť: <?php echo ($progress["LENGTH"]/$route["LENGTH"]*100)."%"; ?></h3>
+						<h3 class="m-4 d-inline-block">Prekonaná časť: <?php
+							$percento = ($progress["LENGTH"]/$route["LENGTH"]*100);
+							if($percento > 100) echo "100%";
+							else echo $percento."%";
+							?></h3>
 					</div>
 				</div>
 				<?php endif; ?>
