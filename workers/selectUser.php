@@ -8,7 +8,7 @@ JOIN routes ON users.ID=routes.OWNER";
 $result = $db->getResult($sql); //aby hodil error ked je chyba?>
 
 
-<form class="form-horizontal" action="../ajax/routes.php" method="post" >
+<form class="form-horizontal" action="ajax/routes.php" method="post" >
     <div class="form-group">
         <label for="sel1">Užívateľ: </label>
         <select class="form-control" id="sell" name="selec">
