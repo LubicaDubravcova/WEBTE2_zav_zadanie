@@ -6,10 +6,9 @@ include_once("workers/dbConn.php");
 $conn = new DBConn();
 //var_dump($_POST);
 $routeID = $_GET['routeID'];
-//if($routeID == "") $routeID = 1;        //TODO tento riadok zmazat sluzi iba na test
 if($_POST['selectUser_0'] != "" || $_POST['selectUser_1'] != "" || $_POST['selectUser_2'] != "" || $_POST['selectUser_3'] != "" || $_POST['selectUser_4'] != "" || $_POST['selectUser_5'] != ""){
-    if($_GET['teamID'] == "")
-        $teamID = $conn->createTeam($routeID);
+    if($_GET['teamID'] == "" && $_GET['routeID'] != "")
+        $teamID = $conn->createTeam($_GET['routeID']);
     else{
         $teamID = $_GET['teamID'];
         $conn->dropTeamMembers($_GET['teamID']);       //nebudem sa s tym srat a rovno dropnem clenov teamu a nahram novych
@@ -56,11 +55,11 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
         }</style>
 </head>
 <body class="bg-dark text-white text-center">
-<?php //require("includes/navbar.php"); ?>
+<?php require("includes/navbar.php"); ?>
 <div class="container">
     <div class="row">
         <div class="col">
-            <h2 class="m-4 d-inline-block">Nový tím</h2>
+            <h2 class="m-4 d-inline-block"><?php if($_GET['teamID'] != "") echo "Upraviť tím"; else echo "Nový tím"; ?></h2>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -98,7 +97,7 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
                 ?>
 
                 <div class="form-group row">
-                    <button type="submit" class="btn btn-dark btn-lg btn-block"><?php if($_GET['teamID'] == "") echo "Vytvor tím"; else echo "Edituj tím"; ?></button>
+                    <button type="submit" class="btn btn-dark btn-lg btn-block"><?php if($_GET['teamID'] == "") echo "Vytvor tím"; else echo "Uprav tím"; ?></button>
                 </div>
                 <div class="form-group row">
                     <a href="route.php?routeId=<?php echo $routeID; ?>" class="btn btn-block btn-default bg-white">Naspäť k podrobnostiam trasy</a>

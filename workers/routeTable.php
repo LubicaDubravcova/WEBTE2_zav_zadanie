@@ -41,7 +41,9 @@ if($routeData != null):
 						<?php echo number_format($routeProgress["LENGTH"][$i]/1000,2,","," ")."km"; ?>
 					</td>
 					<td>
-						<?php echo number_format($routeProgress["LENGTH"][$i]/$routeData["LENGTH"]*100,2,","," ")."%"; ?>
+						<?php $percento = ($routeProgress["LENGTH"][$i]/$routeData["LENGTH"]*100);
+						if($percento > 100) echo "100%";
+						else echo number_format($percento,2,","," ")."%"; ?>
 					</td>
 					<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
 					<td>

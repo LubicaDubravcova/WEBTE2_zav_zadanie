@@ -92,6 +92,64 @@
 			}
 
 			$dbconn->addTraining($_POST['length'], $date, $time_start, $time_end, $lat_start, $lng_start, $lat_end, $lng_end, $rating, $note, $userData->ID, $userData->ACTIVE_ROUTE);
+
+			// overenie, ci pridanim treningu doslo ku dokonceniu trasy
+			$routeData = $dbconn->getRouteData($userData->ACTIVE_ROUTE);
+
+			$routeCompleted = false;
+
+			if($routeData["TYPE"] == "Súkromná") {
+				$routeProgress = $dbconn->getPrivateRouteProgress($userData->ACTIVE_ROUTE);
+				if($routeProgress["LENGTH"] >= $routeData["LENGTH"]) {
+					// dokoncena private trasa
+					$routeCompleted = true;
+
+					// zrusim aktivnu trasu userovy
+					$dbconn->resetActiveRouteForUser($userData->ID);
+				}
+			}
+			else if($routeData["TYPE"] == "Verejná") {
+				// velmi podobne
+				$routeProgress = $dbconn->getPublicRouteProgress($userData->ACTIVE_ROUTE);
+				$index = array_search($userData->ID, $routeProgress["UID"]);
+				if($index !== false) {
+					if($routeProgress["LENGTH"][$index] >= $routeData["LENGTH"]) {
+						// dokoncena public trasa
+						$routeCompleted = true;
+
+						// zrusim aktivnu trasu userovy
+						$dbconn->resetActiveRouteForUser($userData->ID);
+					}
+				}
+			}
+			else if($routeData["TYPE"] == "Štafeta") {
+				// trochu ine
+				$routeProgress = $dbconn->getRelayRouteProgress($userData->ACTIVE_ROUTE);
+
+				// ziskat userov tim
+				$userTeam = $dbconn->getUserTeam($userData->ID, $userData->ACTIVE_ROUTE);
+
+				// najdem tim v progresse
+				$index = array_search($userTeam["ID"], $routeProgress["TID"]);
+				if($index !== false) {
+					if($routeProgress["LENGTH"][$index] >= $routeData["LENGTH"]) {
+						// dokoncena public trasa
+						$routeCompleted = true;
+
+						// musim zrusit aktivnu trasu vsetkym userom z daneho timu, co ju maju ako aktivnu
+						$stmt = $dbconn->getDB()->prepare("UPDATE `users` SET `users`.`ACTIVE_ROUTE` = NULL WHERE `users`.`ID` IN(SELECT `users_teams`.`USER_ID` FROM `users_teams` WHERE `users_teams`.`TEAM_ID` = ?) AND `users`.`ACTIVE_ROUTE` = ?");
+
+						if ($stmt === false) {
+							trigger_error($dbconn->getDB()->error, E_USER_ERROR);
+							return;
+						}
+
+						$stmt->bind_param('ii', $userTeam["ID"], $userData->ACTIVE_ROUTE);
+						$status = $stmt->execute();
+						$stmt->close();
+					}
+				}
+			}
 		}
 	}
 	?>
@@ -106,6 +164,7 @@
 		<?php else: ?>
 		<?php if ($trainingCreationAttempted && $trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Tréning sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
 		<?php if ($trainingCreationAttempted && !$trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Tréning bol úspešne pridaný.</div></div>"?>
+		<?php if ($trainingCreationAttempted && !$trainingCreateFailed && $routeCompleted) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Gratulujeme dokoncili ste svou aktívnu trasu!</div></div>"?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
