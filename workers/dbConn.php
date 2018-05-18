@@ -489,14 +489,14 @@ class DBConn {
 	// zaznamy su usporiadane podla LENGTH zostupne (descending)
 	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
 	function getRelayRouteProgress($routeId) {
-		$stmt = $this->db->prepare("SELECT named_users.TID, GROUP_CONCAT(named_users.NAME SEPARATOR \", \") AS MEMBERS, SUM(`trainings`.`LENGTH`) AS LENGTH FROM (SELECT part_users.UID, part_users.TID, CONCAT(`users`.`FIRSTNAME`,\" \", `users`.`SURNAME`) AS NAME FROM (SELECT `users_teams`.`USER_ID` AS UID , `users_teams`.`TEAM_ID` as TID FROM (SELECT `teams`.`ID` AS TID FROM `teams` WHERE `teams`.`ROUTE_ID` = ?) AS part_teams JOIN `users_teams` ON `users_teams`.`TEAM_ID` = part_teams.TID) AS part_users JOIN `users` ON `users`.`ID` = part_users.UID) AS named_users JOIN `trainings` ON `trainings`.`USER_ID` = named_users.UID WHERE `trainings`.`ROUTE_ID` = ? GROUP BY named_users.TID ORDER BY LENGTH DESC ");
+		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID, GROUP_CONCAT(CONCAT(users.FIRSTNAME,\" \",users.SURNAME) SEPARATOR \", \") AS MEMBERS, SUM(trainings.`LENGTH`) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID INNER JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? GROUP BY users_teams.TEAM_ID ORDER BY LENGTH DESC");
 
 		if ($stmt === false) {
 			trigger_error($this->db->error, E_USER_ERROR);
 			return;
 		}
 
-		$stmt->bind_param('ii', $routeId, $routeId);
+		$stmt->bind_param('i', $routeId);
 
 		$status = $stmt->execute();
 		if($status === false) {

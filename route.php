@@ -158,10 +158,10 @@ else {
 				if($progress != null) {
 					// treba extra osetrit private trasu, lebo funkcia na zobrazenie vyzaduje array
 					if($route["TYPE"] == "Súkromná") {
-						echo "progress = [".$progress["LENGTH"]."]";
+						echo "progress = [".$progress["LENGTH"]."];";
 					}
 					else {
-						echo "progress = ".json_encode($progress["LENGTH"]);
+						echo "progress = ".json_encode($progress["LENGTH"]).";";
 					}
 				}
 			?>

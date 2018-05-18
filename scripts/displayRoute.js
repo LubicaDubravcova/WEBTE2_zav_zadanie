@@ -47,9 +47,6 @@ function displayRoute(route, subdistances = []) {
 	map.fitBounds(routeBoundaries);
 
 	if(subdistances) {
-		// usporiadam skratene useky od najvacsieho, nech sa nezakryvaju ciary
-		subdistances.sort(); // ascending
-		subdistances.reverse(); // descending
 
 		// vytvorim ciary pre skratene useky
 		for(i = 0; i < subdistances.length; i++) {
