@@ -3,8 +3,8 @@ header('Content-Type: text/html; charset=utf-8');
 include_once("../workers/dbConn.php");
 $db = new DBConn();
 $userData = $db->getUserData();
-if ($_GET["user"]==$userData->ID OR $userData->ROLE = "admin") {
-	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $_GET['user'];
+if (isset($_POST["user"]) && ($_POST["user"]==$userData->ID || $userData->ROLE = "admin")) {
+	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $_POST['user'];
 	$result = $db->getAssoc($sql);
 }
 ?>
@@ -40,7 +40,7 @@ if ($_GET["user"]==$userData->ID OR $userData->ROLE = "admin") {
 				</tr>
 				</thead>
 				<tbody id="loadTable">
-					<?php $lengthSum = 0;
+					<?php $lengthSum = 0; if ($result)
 					foreach($result as $i=>$res): 
 					$lengthSum += $res['LENGTH']/1000; ?>
 					<tr>
