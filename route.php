@@ -16,6 +16,9 @@ if(isset($_GET["routeId"])) {
 	if($route["TYPE"] == "Súkromná") {
 		$progress = $db->getPrivateRouteProgress($_GET["routeId"]);
 	}
+	else if($route["TYPE"] == "Verejná") {
+		$progress = $db->getPublicRouteProgress($_GET["routeId"]);
+	}
 }
 else {
 	// presmerujem inam
@@ -92,11 +95,11 @@ else {
 			<?php
 				if($progress != null) {
 					// treba extra osetrit private trasu, lebo funkcia na zobrazenie vyzaduje array
-					if($route["TYPE"] = "Súkromná") {
+					if($route["TYPE"] == "Súkromná") {
 						echo "progress = [".$progress["LENGTH"]."]";
 					}
 					else {
-						echo "progress =".json_encode($progress["LENGTH"]);
+						echo "progress = ".json_encode($progress["LENGTH"]);
 					}
 				}
 			?>
@@ -108,7 +111,6 @@ else {
 			initMap();
 
 			// az potom mozeme vykreslit trasu
-			// TODO pole s vykonmi
 			displayRoute(decodedPath, progress);
 		}
 	</script>

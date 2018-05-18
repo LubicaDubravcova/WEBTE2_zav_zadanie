@@ -414,8 +414,7 @@ class DBConn {
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 
-	// vrati celkovu vzdialenost (v metroch) odjazdenu pre zadanu (private) trasu
-	// pokial zadana trasa nie je priavte vrati 0
+	// vrati celkovu vzdialenost (v metroch) odjazdenu majtelom trasy pre zadanu (private) trasu
 	function getPrivateRouteProgress($routeId) {
     	$stmt = $this->db->prepare("SELECT `routes`.`ID` as RID, `routes`.`TYPE` as TYPE, SUM(`trainings`.`LENGTH`) as LENGTH FROM `routes` JOIN `trainings` ON `routes`.`ID` = `trainings`.`ROUTE_ID` WHERE `routes`.ID = ? AND `trainings`.`USER_ID` = (SELECT `routes`.`OWNER` WHERE `routes`.`ID` = ?) GROUP BY `routes`.`ID`");
 
@@ -434,9 +433,54 @@ class DBConn {
 		$result = $stmt->get_result()->fetch_assoc();
 		$stmt->close();
 
-		if($result != null && $result["TYPE"] != "Súkromná") {
-			$result["LENGTH"] = 0;
+		return $result;
+	}
+
+	// vrati pole obsahujuce spojene NAME, id pouzivatela UID a LENGTH nim prejdenu vzdialenost pre zadanu (public) trasu
+	// zaznamy su usporiadane podla LENGTH zostupne (descending)
+	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
+	function getPublicRouteProgress($routeId) {
+		$stmt = $this->db->prepare("SELECT CONCAT(`users`.`FIRSTNAME`,\" \", `users`.`SURNAME`) AS NAME, `users`.`ID` as UID, SUM(`trainings`.`LENGTH`) AS LENGTH FROM `trainings` JOIN `users` ON `trainings`.`USER_ID` = `users`.`ID` WHERE `trainings`.`ROUTE_ID` = ? GROUP BY `users`.`ID` ORDER BY LENGTH DESC");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
 		}
+
+		$stmt->bind_param('i', $routeId);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+
+		$querryResult = $stmt->get_result();
+
+		$row = $querryResult->fetch_assoc();
+
+		$result = null;
+
+		// nacitam vsetky vysledky
+		if($row != false) {
+
+			$result = array(
+				"NAME" => array(),
+				"UID" => array(),
+				"LENGTH" => array()
+			);
+
+			array_push($result["NAME"], $row["NAME"]);
+			array_push($result["UID"], $row["UID"]);
+			array_push($result["LENGTH"], $row["LENGTH"]);
+
+			while(($row = $querryResult->fetch_assoc()) != false) {
+				array_push($result["NAME"], $row["NAME"]);
+				array_push($result["UID"], $row["UID"]);
+				array_push($result["LENGTH"], $row["LENGTH"]);
+			}
+		}
+
+		$stmt->close();
 
 		return $result;
 	}
