@@ -40,7 +40,7 @@ else {
 		$routeAccess = true;
 	}
 	// trasa je public/stafeta
-	else if($route["TYPE"] != 1) {
+	else if($route["TYPE"] != "Súkromná") {
 		$routeAccess = true;
 	}
 	// user je vlastnikom trasy
