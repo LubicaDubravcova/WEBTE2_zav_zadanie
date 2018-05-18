@@ -49,9 +49,9 @@
 <script type="text/javascript">
 function reloadContent() {
     <?php if($_POST['selec']!=null):?>
-    $("#load").load("workers/routes.php",{id :<?php echo $_POST['selec'];?>},function() {
+    $("#load").load("ajax/routes.php",{id :<?php echo $_POST['selec'];?>},function() {
         <?php else:?>
-        $("#load").load("workers/routes.php",function() {
+        $("#load").load("ajax/routes.php",function() {
     <?php endif; ?>
 
 		var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
