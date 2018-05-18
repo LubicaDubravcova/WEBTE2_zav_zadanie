@@ -5,7 +5,7 @@ set_error_handler(responseErrorHandler);
 if(isset($_POST["routeId"])) {
 	$routeId = $_POST["routeId"];
 
-	include_once ("dbConn.php");
+	include_once("dbConn.php");
 	$db = new DBConn();
 
 	$routeData = $db->getRouteData($routeId);

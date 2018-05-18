@@ -17,6 +17,8 @@
 
     <div class="row justify-content-center bg-light text-dark rounded p-5">
         <?php if ($role == "admin") :?>
+	    <?php $id=$_POST['selec'];
+            echo $id;?>
             <div class="container" id="select">
 
             </div>
