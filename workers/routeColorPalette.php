@@ -13,7 +13,7 @@ class routeColorPalette
 		"#FF00FF"
 	];
 
-	// prida arby ako javascript premenne
+	// prida farby ako javascript premenne
 	static function addToJavascript() {
 		echo "<script>";
 		echo "var ROUTE_COLOR = \"".routeColorPalette::$routeColor."\";\n";
