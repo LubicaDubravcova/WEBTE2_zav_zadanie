@@ -15,8 +15,6 @@ $result = $db->getResult($sql); //aby hodil error ked je chyba
 
 ?>
 
-
-
 <?php foreach($result->fetch_all(MYSQLI_ASSOC) as $user):
     if(($userData->ROLE == "admin") or (($userData->ROLE == "user") and (($user["TYPE"] != "Súkromná") or $user["ID"] == $userData->ID))): ?>
         <tr class="clickable-row" data-href="route.php?routeId=<?php echo $user["ROUTE_ID"]; ?>">
