@@ -101,7 +101,7 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<div id="tableLoad">
+				<div class="row my-4" id="tableLoad">
 				</div>
 			</div>
 		</div>
