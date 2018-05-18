@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-include_once("dbConn.php");
+include_once("../workers/dbConn.php");
 $db = new DBConn();
 
 $userData = $db->getUserData();
@@ -21,7 +21,7 @@ if($routeData != null):
 	}
 
 	// else: vypis tabulku
-	include_once("routeColorPalette.php");
+	include_once("../workers/routeColorPalette.php");
 		for($i = 0; $i < count($routeProgress["LENGTH"]); $i++): ?>
 				<tr>
 					<td sorttable_customkey="<?php echo $i?>">
