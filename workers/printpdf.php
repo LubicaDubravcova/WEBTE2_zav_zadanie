@@ -20,18 +20,18 @@ function generate_pdf($file)
     if ($errors) {
         throw new Exception('PDF generation failed: ' . $errors);
     } else {
-        header('Content-Type: application/pdf');
+        header('Content-Type: application/x-download');
         header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
         header('Pragma: public');
         header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s').' GMT');
         header('Content-Length: ' . strlen($pdf));
-        header('Content-Disposition: inline; filename="' . $filename . '";');
+        header('Content-Disposition: inline; filename="tabulka.pdf";');
         echo $pdf;
     }
-} 
+}
+$_POST['user']=$_GET['user'];
 ob_start();
-$_GET["user"] = 1;
 include '../ajax/trainings.php';
 $string = ob_get_clean();
 generate_pdf($string);

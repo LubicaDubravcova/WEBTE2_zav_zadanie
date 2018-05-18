@@ -59,7 +59,7 @@ if (!$id_record) {
                     </tbody>
                 </table>
             </div>
-            <a id="savepdf" class="btn btn-dark text-white">Uložiť PDF</a>
+            <a id="savepdf" href="workers/printpdf.php?user=<?php echo $id_record?>"class="btn btn-dark text-white">Uložiť PDF</a>
         </div>
     </div>
 </div>
@@ -72,15 +72,12 @@ if (!$id_record) {
         alert(selectedValue);
     }
 function reloadContent() {
-	$("#loadTable").load("ajax/trainings.php #loadTable tr","user=<?php echo $id_record;?>",fixSortOnAjax);
-	$("#loadAverage").load("ajax/trainings.php #loadAverage","user=<?php echo $id_record;?>");
+	$("#loadTable").load("ajax/trainings.php #loadTable tr",{user:<?php echo $id_record;?>},fixSortOnAjax);
+	$("#loadAverage").load("ajax/trainings.php #loadAverage",{user:<?php echo $id_record;?>});
 }
 $(document).ready(function(){
 	reloadContent();
 	setInterval(reloadContent,5000);
-});
-$("#savepdf").click(function(){
-	$.post("workers/printpdf.php");
 });
 </script>
 </body>
