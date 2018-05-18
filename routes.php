@@ -49,7 +49,7 @@
 <script src="scripts/sorttable.js"></script>
 <script type="text/javascript">
 function reloadContent() {
-	$("#load").load("workers/routes.php",function() {
+	$("#load").load("ajax/routes.php",function() {
 		var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
 		if(th != undefined) {
 			if ($(th).hasClass("sorttable_sorted")) {
