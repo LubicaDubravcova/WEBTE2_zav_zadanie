@@ -73,5 +73,5 @@ else {
 }
 
 // neuspech
-echo false;
+echo 0;
 ?>
