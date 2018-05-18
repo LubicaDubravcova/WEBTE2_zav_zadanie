@@ -25,29 +25,12 @@ $result2 = $db->getResult($sql2);
         </div>
     </div>
     <div class="row justify-content-center bg-light text-dark rounded p-5">
-        <?php
-        /*
-        // overim si, ci ma uzivatel pravo trasu zobrazit
-        $routeAccess = false;
-        if($role == "admin") {
-            $routeAccess = true;
-        }
-        // trasa je public/stafeta
-        else if($route["TYPE"] != 1) {
-            $routeAccess = true;
-        }
-        // user je vlastnikom trasy
-        else if($route["OWNER"] == $userData->ID) {
-            $routeAccess = true;
-        }
-*/
-        ?>
         <?php if ($role == "admin"): ?>
         <div class="form-group">
             <label for="sel">Užívateľ: </label>
             <select class="form-control" id="sel">
                 <?php foreach($result2->fetch_all(MYSQLI_ASSOC) as $user): ?>
-                <option value="$user['ID']"> <?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?> </option>
+                <option value="<?php $user['ID']?>"> <?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?> </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -67,14 +50,14 @@ $result2 = $db->getResult($sql2);
                     <tbody>
                     <?php foreach($result->fetch_all(MYSQLI_ASSOC) as $user): ?>
                         <tr>
-                        <?php if (($role != "admin") and (($user["TYPE"] == "Verejná") or ($user["TYPE"] == "Štafetová"))): ?>
+                        <?php if (($role != "admin") and (($user["TYPE"] == "Verejná") or ($user["TYPE"] == "Štafeta"))): ?>
                             <td><?php echo $user["NAME"]; ?></td>
                             <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
                             <td>
                                 <?php if ($user["ACTIVE_ROUTE"]!=NULL)
-                                        echo "aktívna";
+                                        echo "<img alt='active' src='images/green-dot.png'>";
                                     else
-                                        echo "pasívna";
+                                        echo "<img alt='pasive' src='images/red-dot.png'>";
                                 ?>
                             </td>
                             <td><?php echo $user["TYPE"]; ?></td>
@@ -84,9 +67,9 @@ $result2 = $db->getResult($sql2);
                             <td><?php echo ($user["LENGTH"]/1000)." km"; ?></td>
                             <td>
                                 <?php if ($user["ACTIVE_ROUTE"]!=NULL)
-                                    echo "aktívna";
+                                    echo "<img alt='active' src='images/green-dot.png'>";
                                 else
-                                    echo "pasívna";
+                                    echo "<img alt='pasive' src='images/red-dot.png'>";
                                 ?>
                             </td>
                             <td><?php echo $user["TYPE"]; ?></td>
