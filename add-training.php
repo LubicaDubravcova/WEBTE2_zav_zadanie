@@ -92,6 +92,58 @@
 			}
 
 			$dbconn->addTraining($_POST['length'], $date, $time_start, $time_end, $lat_start, $lng_start, $lat_end, $lng_end, $rating, $note, $userData->ID, $userData->ACTIVE_ROUTE);
+
+			// overenie, ci pridanim treningu doslo ku dokonceniu trasy
+			$routeData = $dbconn->getRouteData($userData->ACTIVE_ROUTE);
+
+			$routeCompleted = false;
+
+			if($routeData["TYPE"] == "Súkromná") {
+				$routeProgress = $dbconn->getPrivateRouteProgress($userData->ACTIVE_ROUTE);
+				if($routeProgress["LENGTH"] >= $routeData["LENGTH"]) {
+					// dokoncena private trasa
+					$routeCompleted = true;
+
+					// zrusim aktivnu trasu userovy
+					$dbconn->resetActiveRouteForUser($userData->ID);
+				}
+			}
+			else if($routeData["TYPE"] == "Verejná") {
+				// velmi podobne
+				$routeProgress = $dbconn->getPublicRouteProgress($userData->ACTIVE_ROUTE);
+				$index = array_search($userData->ID, $routeProgress["UID"]);
+				if($index !== false) {
+					if($routeProgress["LENGTH"][$index] >= $routeData["LENGTH"]) {
+						// dokoncena public trasa
+						$routeCompleted = true;
+
+						// zrusim aktivnu trasu userovy
+						$dbconn->resetActiveRouteForUser($userData->ID);
+					}
+				}
+			}
+			else if($routeData["TYPE"] == "Štafeta") {
+				// trochu ine
+				$routeProgress = $dbconn->getRelayRouteProgress($userData->ACTIVE_ROUTE);
+
+				// ziskat userov tim
+				$userTeam = $dbconn->getUserTeam($userData->ID, $userData->ACTIVE_ROUTE);
+
+				var_dump($userTeam);
+				/*
+				// najdem tim v progresse
+				$index = array_search($userTeam, $routeProgress["TID"]);
+				if($index !== false) {
+					if($routeProgress["LENGTH"][$index] >= $routeData["LENGTH"]) {
+						// dokoncena public trasa
+						$routeCompleted = true;
+
+						// zrusim aktivnu trasu userovy
+						$dbconn->resetActiveRouteForUser($userData->ID);
+					}
+				}
+				*/
+			}
 		}
 	}
 	?>

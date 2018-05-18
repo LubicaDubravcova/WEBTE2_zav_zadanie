@@ -394,6 +394,20 @@ class DBConn {
 		return $userData->ID;
 	}
 
+	// nastavy userovy aktivnu trasu na NULL
+	function resetActiveRouteForUser($userId) {
+		$stmt = $this->db->prepare("UPDATE `users` SET `ACTIVE_ROUTE`= NULL WHERE `ID` = ?");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param("i",$userId);
+		$stmt->execute();
+		$stmt->close();
+	}
+
 	function addTraining($length, $date = null, $time_start = null, $time_end = null, $lat_start = null, $lng_start = null, $lat_end = null, $lng_end = null, $rating = null, $note = null, $userID, $routeID) {
 		$stmt = $this->db->prepare("INSERT INTO `trainings`VALUES (null,?,?,?,?,?,?,?,?,?,?,?,?)");
 
@@ -528,6 +542,27 @@ class DBConn {
 			}
 		}
 
+		$stmt->close();
+
+		return $result;
+	}
+
+	// vrati ID timu daneho pouzivatela pre danu trat, ak trat nie je stafetova vrati prazdny querry
+	function getUserTeam($userId, $routeId) {
+		$stmt = $this->db->prepare("SELECT `teams`.`ID`  FROM `teams` JOIN `users_teams` ON `users_teams`.`TEAM_ID` = `teams`.`ID` WHERE `teams`.`ROUTE_ID` = ? AND `users_teams`.`USER_ID` = ?");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('ii', $routeId, $userId);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$result = $stmt->get_result()->fetch_assoc();
 		$stmt->close();
 
 		return $result;
