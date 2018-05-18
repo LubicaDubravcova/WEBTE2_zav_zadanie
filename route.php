@@ -166,6 +166,10 @@ else {
 		var encodedPath = <?php echo json_encode($route["PATH"]); ?>;
 		// dekodovanie pathu podla googlu
 		var decodedPath = google.maps.geometry.encoding.decodePath(encodedPath);
+<<<<<<< HEAD
+=======
+		var routeLength = <?php echo $route["LENGTH"]; ?>;
+>>>>>>> origin/master
 
 		function callback() {
 
@@ -191,6 +195,7 @@ else {
 	</script>
 	<?php if($route["TYPE"] != "Súkromná"): ?>
 	<script>
+<<<<<<< HEAD
 		// AJAX pre update tras
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
@@ -201,6 +206,23 @@ else {
 		xhttp.open("POST", "workers/routeData.php", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
+=======
+		// periodicke volanie serveru o update
+		setInterval(AJAXRequst, 5000);
+
+		function AJAXRequst() {
+			// AJAX pre update tras
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					updateDisplay(JSON.parse(this.responseText));
+				}
+			};
+			xhttp.open("POST", "workers/routeData.php", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
+		}
+>>>>>>> origin/master
 
 		function updateDisplay(dataArray) {
 			// prekreslenie mapy
@@ -220,9 +242,25 @@ else {
 			}
 
 			// naplnit tabulku
+<<<<<<< HEAD
 			for(var i = 0; i < dataArray.TID.length; i++) {
 				table.innerHTML += ""+
 				"";
+=======
+			for(var i = 0; i < dataArray.LENGTH.length; i++) {
+				table.innerHTML += "<td>" +
+					"<div class=\"legenColorBlock\" style=\"background-color: " + SUBROUTE_COLORS[i%SUBROUTE_COLORS.length] + "\"></div>" +
+					"</td>"+
+					"<td>"+
+					dataArray.<?php if($route["TYPE"] == "Verejná") echo "NAME"; else echo "MEMBERS"; ?>[i]+
+					"</td>"+
+					"<td>"+
+					dataArray.LENGTH[i]/1000 + "km"+
+					"</td>"+
+					"<td>"+
+					(dataArray.LENGTH[i]/routeLength*100) + "%"+
+					"</td>";
+>>>>>>> origin/master
 			}
 		}
 	</script>
