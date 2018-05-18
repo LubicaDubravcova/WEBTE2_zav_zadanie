@@ -16,9 +16,8 @@
 	<div class='row'><div class='btn btn-block btn-danger disabled' style="display: none" id="activeWrong">Zvolenú trasu nie je možné nastaviť ako aktívnu.</div></div>
 
     <div class="row justify-content-center bg-light text-dark rounded p-5">
+
         <?php if ($role == "admin") :?>
-	    <?php $id=$_POST['selec'];
-            echo $id;?>
             <div class="container" id="select">
 
             </div>
@@ -49,7 +48,12 @@
 <script src="scripts/sorttable.js"></script>
 <script type="text/javascript">
 function reloadContent() {
-	$("#load").load("ajax/routes.php",function() {
+    <?php if($_POST['selec']!=null):?>
+    $("#load").load("workers/routes.php",{id :<?php echo $_POST['selec'];?>},function() {
+        <?php else:?>
+        $("#load").load("workers/routes.php",function() {
+    <?php endif; ?>
+
 		var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
 		if(th != undefined) {
 			if ($(th).hasClass("sorttable_sorted")) {
