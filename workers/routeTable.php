@@ -31,6 +31,9 @@ if($routeData != null) {
 					<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
 				<?php else: ?>
 					<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
+					<?php if($userData->ROLE == "admin"): ?>
+						<th>Spáva tímov</th>
+					<?php endif; ?>
 				<?php endif; ?>
 			</tr>
 	<!-- riadky tabulky -->
@@ -55,11 +58,21 @@ if($routeData != null) {
 					<td>
 						<?php echo ($routeProgress["LENGTH"][$i]/$routeData["LENGTH"]*100)."%"; ?>
 					</td>
+					<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+					<td>
+						<a class="btn" href="add-team.php?teamID=<?php echo $routeProgress["TID"][$i]; ?>&routeID=<?php echo $_POST["routeId"]; ?>">Upraviť tím</a>
+					</td>
+					<?php endif; ?>
 				</tr>
 			<?php endfor; ?>
 	<!-- koniec tabulky -->
 		</table>
 	</div>
+	<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+	</div>
+	<div class="row my-4">
+		<a class="btn" href="add-team.php?routeID=<?php echo $_POST["routeId"]; ?>">Pridať tím</a>
+	<?php endif; ?>
 <?php
 }
 ?>
