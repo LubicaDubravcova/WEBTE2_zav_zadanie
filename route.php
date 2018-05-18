@@ -147,6 +147,9 @@ else {
 		setInterval(AjaxMap, 5000);
 		setInterval(AjaxTable, 5000);
 
+		// vygenerovanie tabulky na uvod
+		AjaxTable();
+
 		function AjaxMap() {
 			// AJAX pre update tras na mape
 			var xhttp = new XMLHttpRequest();
@@ -171,7 +174,7 @@ else {
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					document.getElementById("tableLoad").innerText = this.responseText;
+					document.getElementById("tableLoad").innerHTML = this.responseText;
 				}
 			};
 			xhttp.open("POST", "workers/routeTable.php", true);
