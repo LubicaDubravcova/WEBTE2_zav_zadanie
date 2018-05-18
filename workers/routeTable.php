@@ -52,9 +52,4 @@ if($routeData != null):
 					<?php endif; ?>
 				</tr>
 			<?php endfor; ?>
-	<!-- koniec tabulky -->
-	<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
-	<div class="row my-4">
-		<a class="btn" href="add-team.php?routeID=<?php echo $_POST["routeId"]; ?>">Pridať tím</a>
-	</div>
-<?php endif; endif;?>
+<?php endif; ?>
