@@ -35,6 +35,7 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
 <head>
     <title>Záverečné Zadanie</title>
     <?php require("includes/head.php");?>
+    <script type="text/javascript" src="scripts/disableSelectOption.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <link href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css" rel="stylesheet">
     <style>.ui-autocomplete {max-height: 100px;overflow-y: auto;overflow-x: hidden;text-align:left;}
@@ -64,31 +65,39 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
     </div>
     <div class="row justify-content-center">
         <div class="col-md-8 col-md-offset-3 bg-light text-dark rounded p-5">
-            <?php //if ($alreadyExists) echo "<div class='row form-group'><div class='btn btn-block btn-danger disabled'>E-mail sa už používa</div></div>"?>
             <form method="post" action="#">
 
                 <?php
+                $selected = Array();
                 for($memberNum = 0; $memberNum < 6; $memberNum++) {
                     echo "<div class=\"form-group row\">
-                            <label for=\"selectUser" . $memberNum . "\" class=\"col-sm-3 col-form-label text-right\">Člen " . ($memberNum + 1) . ":</label>
+                            <label for=\"selectUser_" . $memberNum . "\" class=\"col-sm-3 col-form-label text-right\">Člen " . ($memberNum + 1) . ":</label>
                             <div class=\"dropdown\">
-                                <select id=\"selectUser " . $memberNum . "\" class=\"form-control\" name=\"selectUser " . $memberNum . "\">
+                                <select id=\"selectUser_" . $memberNum . "\" class=\"form-control\" name=\"selectUser " . $memberNum . "\">
                                     <option></option>";
                     $i = 0;
 
                     if($_GET['teamID'] != ""){  //máme na vstupe ID teamu, používateľ ho chce teda editovať miesto tvorenia nového tímu
                         $teamMembers = $conn->getAssoc("SELECT users.ID AS ID FROM users JOIN users_teams ON users_teams.USER_ID=users.ID WHERE users_teams.TEAM_ID = " . $_GET['teamID']);
                         while ($result[$i]) {
-                            echo "<option value=\"" . $result[$i]['ID'] . "\"";
+                            echo "<option value=\"" . $result[$i]['ID'] . "\" onclick='disableSelectOption(" . $result[$i]['ID'] . ", " . $memberNum . ");'";
                             if($teamMembers[$memberNum] && $teamMembers[$memberNum]['ID'] == $result[$i]['ID']){
                                 echo " selected ";
                             }
+                            $j = 0;
+                            while($j < count($teamMembers)){
+                                if($j != $memberNum && $teamMembers[$j]['ID'] == $result[$i]['ID']){
+                                    echo " style=\"display:none\" ";
+                                }
+                                $j++;
+                            }
+
                             echo ">" . $result[$i]['SURNAME'] . " " . $result[$i]['FIRSTNAME'] . "</option>";
                             $i++;
                         }
                     }else{
                         while ($result[$i]) {
-                            echo "<option value=\"" . $result[$i]['ID'] . "\">" . $result[$i]['SURNAME'] . " " . $result[$i]['FIRSTNAME'] . "</option>";
+                            echo "<option value=\"" . $result[$i]['ID'] . "\" onclick='disableSelectOption(" . $result[$i]['ID'] . ", " . $memberNum . ");'>" . $result[$i]['SURNAME'] . " " . $result[$i]['FIRSTNAME'] . "</option>";
                             $i++;
                         }
                     }
