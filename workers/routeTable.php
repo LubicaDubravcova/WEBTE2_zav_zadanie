@@ -7,7 +7,7 @@ $userData = $db->getUserData();
 
 $routeData = $db->getRouteData($_POST["routeId"]);
 
-if($routeData != null) {
+if($routeData != null):
 	$routeProgress = null;
 	if($routeData["TYPE"] == "Verejná") {
 		$routeProgress = $db->getPublicRouteProgress($_POST["routeId"]);
@@ -22,24 +22,9 @@ if($routeData != null) {
 
 	// else: vypis tabulku
 	include_once ("routeColorPalette.php");
-?>
-<!-- Zaciatok tabulky -->
-	<div class="table-responsive">
-		<table class="table-hover">
-			<tr>
-				<?php if($routeData["TYPE"] == "Verejná"): ?>
-					<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
-				<?php else: ?>
-					<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
-					<?php if($userData->ROLE == "admin"): ?>
-						<th>Spáva tímov</th>
-					<?php endif; ?>
-				<?php endif; ?>
-			</tr>
-	<!-- riadky tabulky -->
-			<?php for($i = 0; $i < count($routeProgress["LENGTH"]); $i++): ?>
+		for($i = 0; $i < count($routeProgress["LENGTH"]); $i++): ?>
 				<tr>
-					<td>
+					<td sorttable_customkey="<?php echo $i?>">
 						<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
 					</td>
 					<td>
@@ -53,10 +38,10 @@ if($routeData != null) {
 						?>
 					</td>
 					<td>
-						<?php echo ($routeProgress["LENGTH"][$i]/1000)."km"; ?>
+						<?php echo number_format($routeProgress["LENGTH"][$i]/1000,2,","," ")."km"; ?>
 					</td>
 					<td>
-						<?php echo ($routeProgress["LENGTH"][$i]/$routeData["LENGTH"]*100)."%"; ?>
+						<?php echo number_format($routeProgress["LENGTH"][$i]/$routeData["LENGTH"]*100,2,","," ")."%"; ?>
 					</td>
 					<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
 					<td>
@@ -66,13 +51,8 @@ if($routeData != null) {
 				</tr>
 			<?php endfor; ?>
 	<!-- koniec tabulky -->
-		</table>
-	</div>
 	<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
-	</div>
 	<div class="row my-4">
 		<a class="btn" href="add-team.php?routeID=<?php echo $_POST["routeId"]; ?>">Pridať tím</a>
-	<?php endif; ?>
-<?php
-}
-?>
+	</div>
+<?php endif; endif;?>

@@ -11,7 +11,8 @@ $result = $db->getResult($sql); //aby hodil error ked je chyba ?>
 	<tr class="clickable-row" data-href="route.php?routeId=<?php echo $user["ROUTE_ID"]; ?>">
 		<td><?php echo $user["ROUTE_NAME"]; ?></td>
 		<td><?php echo number_format($user["LENGTH"]/1000,2,","," ")."km"; ?></td>
-		<td><a class="<?php if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"]) echo "selected " ?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
+		<td sorttable_customkey="<?php $routeactive = false; if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"]){$routeactive = true; echo 1;} else echo 2;?>">
+			<a class="<?php if($routeactive) echo "selected "; ?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
 		</td>
 		<td><?php echo $user["TYPE"]; ?></td>
 		<?php if($userData->ROLE == "admin"): ?>

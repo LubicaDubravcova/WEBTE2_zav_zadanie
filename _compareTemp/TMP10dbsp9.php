@@ -105,28 +105,8 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<?php if($routeAccess): ?>
-				<div class="row my-4">
-					<div class="table-responsive">
-						<table class="table-hover sortable">
-							<thead>
-								<tr>
-								<?php if($route["TYPE"] == "Verejná"): ?>
-									<th>Farba</th><th>Meno</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
-								<?php else: ?>
-									<th>Farba</th><th>Členovia týmu</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
-								<?php if(($userData->ROLE == "admin")): ?>
-									<th class="sorttable_nosort">Spáva tímov</th>
-								<?php endif; ?>
-								<?php endif; ?>
-								</tr>
-							</thead>
-							<tbody id="load">
-							</tbody>
-						</table>
-					</div>
+				<div class="row my-4" id="tableLoad">
 				</div>
-				<?php endif; ?>
 			</div>
 		</div>
 		<?php endif; ?>
@@ -167,6 +147,12 @@ else {
 	</script>
 	<?php if($route["TYPE"] != "Súkromná"): ?>
 	<script>
+		// periodicke volanie serveru o update
+		setInterval(AjaxMap, 5000);
+		setInterval(AjaxTable, 5000);
+
+		// vygenerovanie tabulky na uvod
+		AjaxTable();
 
 		function AjaxMap() {
 			// AJAX pre update tras na mape
@@ -188,16 +174,20 @@ else {
 		}
 
 		function AjaxTable() {
-			$("#load").load("workers/routeTable.php",{routeId: "<?php echo $_GET["routeId"];?>"},fixSortOnAjax);
+			// AJAX pre update tabulky
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("tableLoad").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "workers/routeTable.php", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
 		}
-		$(document).ready(function(){
-			setInterval(AjaxMap, 5000);
-			AjaxTable();
-			setInterval(AjaxTable,5000);
-		});
 	</script>
-	<?php endif; endif;?>
-	<script src="scripts/sorttable.js"></script>
+	<?php endif; ?>
+	<?php endif; ?>
 </body>
 </html>
 
