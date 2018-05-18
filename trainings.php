@@ -13,11 +13,14 @@ include_once("workers/dbConn.php");
 <?php require("includes/navbar.php");
 $id_record = $_GET['open'];
 $db = new DBConn();
-if (!$id_record)
-$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $userData->ID;
-else
+if (!$id_record) {
+	$id_record = $userData->ID;
+	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $userData->ID;
+	$result = $db->getAssoc($sql);
+} elseif($userData->ROLE == "admin") {
     $sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $id_record;
-$result = $db->getAssoc($sql);
+	$result = $db->getAssoc($sql);
+}
 ?>
 <div class="container text-center">
     <div class="row">
@@ -43,56 +46,20 @@ $result = $db->getAssoc($sql);
                         <th>Priemerná rýchlosť</th>
                     </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                            $i = 0;
-                            $lengthSum = 0;
-                            while($result[$i]){
-                                $lengthSum += $result[$i]['LENGTH']/1000;
-                                echo "<tr><td><a href='route.php?routeID=" . $result[$i]['routeID'] . "'>" . $result[$i]['NAME'] . "</a></td><td>" . $result[$i]['DATE'] . "</td><td>" . ($result[$i]['LENGTH']/1000) . "Km</td><td>" . $result[$i]['START_TIME'] . "</td><td>" . $result[$i]['END_TIME'] . "</td><td>";
-                                if($result[$i]['START_LAT'] != "") echo round($result[$i]['START_LAT'], 3);
-                                if($result[$i]['START_LAT'] != "" && $result[$i]['START_LNG'] != "") echo ", ";
-                                if($result[$i]['START_LNG'] != "") echo round($result[$i]['START_LNG'], 3);
-                                echo "</td><td>";
-                                if($result[$i]['END_LAT'] != "") echo round($result[$i]['END_LAT'], 3);
-                                if($result[$i]['END_LAT'] != "" && $result[$i]['END_LNG'] != "") echo ", ";
-                                if($result[$i]['END_LNG'] != "") echo round($result[$i]['END_LNG'], 3);
-                                echo "</td><td>" . $result[$i]['RATING'] . "</td><td>" . $result[$i]['NOTES'] . "</td>";
-                                $avgSpeed = "neznáma";
-                                if($result[$i]['END_TIME'] != "" && $result[$i]['START_TIME'] != ""){
-                                    $startTime = strtotime($result[$i]['START_TIME']);
-                                    $endTime = strtotime($result[$i]['END_TIME']);
-                                    $duration = $endTime - $startTime;
-                                    $avgSpeed = ($result[$i]['LENGTH']/1000) / ($duration/3600);
-                                }
-                                echo "<td>" . $avgSpeed;
-                                if($avgSpeed != "neznáma")
-                                    echo "Km/h";
-                                echo "</td></tr>";
-                                $i++;
-                            }
-                        ?>
+                    <tbody id="loadTable">
                     </tbody>
                 </table>
-                <table class='table sortable table-hover'>
+                <table class='table table-hover'>
                     <thead>
                     <tr>
                         <th>Priemerná odjazdená vzdialenosť</th>
                     </tr>
                     </thead>
-                    <tbody>
-                        <td>
-                            <?php
-                            if($i != 0) {
-                                echo $lengthSum/$i . "Km/tréning";
-                            } else{
-                                echo 0 . "Km/tréning";
-                            }
-                            ?>
-                        </td>
+                    <tbody id="loadAverage">
                     </tbody>
                 </table>
             </div>
+            <a id="savepdf" class="btn btn-dark text-white">Uložiť PDF</a>
         </div>
     </div>
 </div>
@@ -104,6 +71,17 @@ $result = $db->getAssoc($sql);
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
         alert(selectedValue);
     }
+function reloadContent() {
+	$("#loadTable").load("ajax/trainings.php #loadTable tr","user=<?php echo $id_record;?>",fixSortOnAjax);
+	$("#loadAverage").load("ajax/trainings.php #loadAverage","user=<?php echo $id_record;?>");
+}
+$(document).ready(function(){
+	reloadContent();
+	setInterval(reloadContent,5000);
+});
+$("#savepdf").click(function(){
+	$.post("workers/printpdf.php");
+});
 </script>
 </body>
 </html>
