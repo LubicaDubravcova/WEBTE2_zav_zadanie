@@ -101,56 +101,8 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<?php if($route["TYPE"] == "Verejná"): ?>
-				<div class="table-responsive">
-					<table class="table-hover">
-						<tr id="header_row">
-							<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
-						</tr>
-						<?php for($i = 0; $i < count($progress["NAME"]); $i++): ?>
-						<tr>
-							<td>
-								<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
-							</td>
-							<td>
-								<?php echo $progress["NAME"][$i]; ?>
-							</td>
-							<td>
-								<?php echo ($progress["LENGTH"][$i]/1000)."km"; ?>
-							</td>
-							<td>
-								<?php echo ($progress["LENGTH"][$i]/$route["LENGTH"]*100)."%"; ?>
-							</td>
-						</tr>
-						<?php endfor; ?>
-					</table>
+				<div id="tableLoad">
 				</div>
-				<?php endif; ?>
-				<?php if($route["TYPE"] == "Štafeta"): ?>
-					<div class="table-responsive">
-						<table class="table-hover">
-							<tr id="header_row">
-								<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
-							</tr>
-							<?php for($i = 0; $i < count($progress["MEMBERS"]); $i++): ?>
-								<tr>
-									<td>
-										<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
-									</td>
-									<td>
-										<?php echo $progress["MEMBERS"][$i]; ?>
-									</td>
-									<td>
-										<?php echo ($progress["LENGTH"][$i]/1000)."km"; ?>
-									</td>
-									<td>
-										<?php echo ($progress["LENGTH"][$i]/$route["LENGTH"]*100)."%"; ?>
-									</td>
-								</tr>
-							<?php endfor; ?>
-						</table>
-					</div>
-				<?php endif; ?>
 			</div>
 		</div>
 		<?php endif; ?>
@@ -167,10 +119,8 @@ else {
 		// dekodovanie pathu podla googlu
 		var decodedPath = google.maps.geometry.encoding.decodePath(encodedPath);
 
-		var routeLength = <?php echo $route["LENGTH"]; ?>;
-
+		// callback google inicializacie mapy
 		function callback() {
-
 			var progress;
 			<?php
 				if($progress != null) {
@@ -188,16 +138,17 @@ else {
 			initMap();
 
 			// az potom mozeme vykreslit trasu
-			displayRoute(decodedPath, progress);
+			displayRoute(decodedPath, progress, true);
 		}
 	</script>
 	<?php if($route["TYPE"] != "Súkromná"): ?>
 	<script>
 		// periodicke volanie serveru o update
-		setInterval(AJAXRequst, 5000);
+		setInterval(AjaxMap, 5000);
+		setInterval(AjaxTable, 5000);
 
-		function AJAXRequst() {
-			// AJAX pre update tras
+		function AjaxMap() {
+			// AJAX pre update tras na mape
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -212,35 +163,20 @@ else {
 		function updateDisplay(dataArray) {
 			// prekreslenie mapy
 			removePolylines();
-			displayRoute(decodedPath, dataArray.LENGTH);
-
-			// update tabuliek
-			updateTable(dataArray)
+			displayRoute(decodedPath, dataArray.LENGTH, false);
 		}
 
-		function updateTable(dataArray) {
-			// vyprazdnit tabulku
-			var table = document.getElementById("header_row").parentElement;
-
-			while(table.childElementCount != 1) {
-				table.removeChild(table.lastElementChild);
-			}
-
-			// naplnit tabulku
-			for(var i = 0; i < dataArray.LENGTH.length; i++) {
-				table.innerHTML += "<td>" +
-					"<div class=\"legenColorBlock\" style=\"background-color: " + SUBROUTE_COLORS[i%SUBROUTE_COLORS.length] + "\"></div>" +
-					"</td>"+
-					"<td>"+
-					dataArray.<?php if($route["TYPE"] == "Verejná") echo "NAME"; else echo "MEMBERS"; ?>[i]+
-					"</td>"+
-					"<td>"+
-					dataArray.LENGTH[i]/1000 + "km"+
-					"</td>"+
-					"<td>"+
-					(dataArray.LENGTH[i]/routeLength*100) + "%"+
-					"</td>";
-			}
+		function AjaxTable() {
+			// AJAX pre update tabulky
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("tableLoad").innerText = this.responseText;
+				}
+			};
+			xhttp.open("POST", "workers/routeTable.php", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
 		}
 	</script>
 	<?php endif; ?>

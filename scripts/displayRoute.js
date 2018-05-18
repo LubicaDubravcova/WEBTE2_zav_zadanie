@@ -23,7 +23,7 @@ function initMap() {
 // funkcia vykresli na mapu trasu a casti tejto trasy zadanych dlzok
 // route - pole LatLng objektov urcujuce body trasy
 // subdistances - pole vzdialenosti, ktore presli jednotlivi ludia urcujuce dlzky usekov trasy v "route" v METROCH
-function displayRoute(route, subdistances = []) {
+function displayRoute(route, subdistances = [], resetView) {
 	// dokumentacia ku LatLng objektu: https://developers.google.com/maps/documentation/javascript/reference/3/?csw=1#LatLng
 
 	// vytvorim cirau pre celu trasu a zobrazim ju
@@ -45,8 +45,10 @@ function displayRoute(route, subdistances = []) {
 		routeBoundaries.extend(route[i]);
 	}
 
-	// vycentrujem pohlad na trasu
-	map.fitBounds(routeBoundaries);
+	if(resetView) {
+		// vycentrujem pohlad na trasu
+		map.fitBounds(routeBoundaries);
+	}
 
 	if(subdistances) {
 
