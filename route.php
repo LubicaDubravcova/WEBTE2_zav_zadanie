@@ -181,7 +181,7 @@ else {
 					updateDisplay(JSON.parse(this.responseText));
 				}
 			};
-			xhttp.open("POST", "workers/routeData.php", true);
+			xhttp.open("POST", "ajax/routeData.php", true);
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
 		}
@@ -193,7 +193,7 @@ else {
 		}
 
 		function AjaxTable() {
-			$("#load").load("workers/routeTable.php",{routeId: "<?php echo $_GET["routeId"];?>"},fixSortOnAjax);
+			$("#load").load("ajax/routeTable.php",{routeId: "<?php echo $_GET["routeId"];?>"},fixSortOnAjax);
 		}
 		$(document).ready(function(){
 			setInterval(AjaxMap, 5000);

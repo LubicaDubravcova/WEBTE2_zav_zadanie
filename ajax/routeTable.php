@@ -21,7 +21,7 @@ if($routeData != null):
 	}
 
 	// else: vypis tabulku
-	include_once ("routeColorPalette.php");
+	include_once("routeColorPalette.php");
 		for($i = 0; $i < count($routeProgress["LENGTH"]); $i++): ?>
 				<tr>
 					<td sorttable_customkey="<?php echo $i?>">
