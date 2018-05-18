@@ -84,6 +84,18 @@ else {
 						<h3 class="m-4 d-inline-block">Dĺžka: <?php echo $route["LENGTH"]/1000 . "km" ?></h3>
 					</div>
 				</div>
+				<?php if($route["TYPE"] == "Súkromná"): ?>
+				<div class="row my-4">
+					<div class="col">
+						<h3 class="m-4 d-inline-block">Prekonaná vzdialenosť: <?php echo ($progress["LENGTH"]/1000)."km"; ?></h3>
+					</div>
+				</div>
+				<div class="row my-4">
+					<div class="col">
+						<h3 class="m-4 d-inline-block">Prekonaná časť: <?php echo ($progress["LENGTH"]/$route["LENGTH"]*100)."%"; ?></h3>
+					</div>
+				</div>
+				<?php endif; ?>
 				<div class="row my-4">
 					<div class="col">
 						<div id="map" class="w-100"></div>
