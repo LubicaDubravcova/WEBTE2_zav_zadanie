@@ -2,7 +2,9 @@
 
 header('Content-Type: text/html; charset=utf-8'); 
 include_once("workers/dbConn.php");
-$database = new DBConn();
+require_once "workers/vendor/autoload.php";
+$db = new DBConn();
+$database = $db->getDB();
 
  $change = false;
     if (!isset($_POST["nazov"])){
@@ -23,10 +25,39 @@ $database = new DBConn();
     }
 
     if($change == true){
-	   $q2 = "INSERT INTO News (ID, Nazov, Text) VALUES (NULL,'$name','$textarea')";
-       $res = $database->insertQuery($q2);
+	   $q1 = "INSERT INTO news (ID, Nazov, Text) VALUES (NULL,'$name','$textarea')";
+       $res = $database->query($q1);
+       $q2 = "SELECT email FROM users WHERE SUBSCRIBED = 1";
+       $res2 = $database->query($q2);
+
+       while($obj = $res2->fetch_object()){
+			$email = $obj->email;
+			$message = '<html><body>';
+			$message .= "
+						<h2 style=\"color:#003366\"><b>$name</b></h2> <br/>
+						$textarea<br/>	
+						"; 
+			$message .= '</body></html>';
+
+			$transport = (new Swift_SmtpTransport('smtp.azet.sk', 25))
+			  ->setUsername('webte2@azet.sk')
+			  ->setPassword('ZavZad22')
+			;
+
+			$mail = new Swift_Mailer($transport);
+
+			$msg = (new Swift_Message('Aktuality z Route to Fitness'))
+			  ->setFrom(['webte2@azet.sk' => 'Route to Fitness'])
+			  ->setTo($email)
+			  ->setBody($message,'text/html')
+			  ;
+
+			// Send the message
+			$emailResult = $mail->send($msg);
+       }
+
        if($res == false){
-       	header("Location: http://147.175.98.151/RealZaverecne/addNews.php");
+       	header("Location: http://147.175.98.151/RealZaverecne/add-news.php");
        }
    }
 ?>
@@ -65,7 +96,7 @@ $database = new DBConn();
 		</div>
 		<div class="row justify-content-center">
 			<div class="col-md-8 col-md-offset-3 bg-light text-dark rounded p-5">
-				<form method="post" action="addNews.php">
+				<form method="post" action="add-news.php">
 					<div class="form-group row">
 						<label for="inputNazov" class="col-sm-3 col-form-label text-right">Názov:</label>
 						<div class="col">

@@ -3,11 +3,12 @@
 <file name="index.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710333759167888" remote="131710333880000000" Dst="2" />
 <file name="register.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710448351993385" remote="131710448480000000" Dst="2" />
 <file name="confirm.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710486952968558" remote="131710487080000000" Dst="2" />
-<file name="users.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710682387388449" remote="131710682520000000" Dst="2" />
+<file name="users.php" server="147.175.98.151/public_html/RealZaverecne/" local="131711055099471327" remote="131711055240000000" Dst="2" />
 <file name="news.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710602165788172" remote="131710602290000000" Dst="2" />
-<file name="routes.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710684261895798" remote="131710684410000000" Dst="2" />
-<file name="add-news.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709745900000000" remote="131710525730000000" Dst="2" />
-<file name="add-route.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710487593949972" remote="131710525730000000" Dst="2" />
+<file name="routes.php" server="147.175.98.151/public_html/RealZaverecne/" local="131711090523963550" remote="131711090670000000" Dst="2" />
+<file name="add-news.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710558080000000" remote="131710558080000000" Dst="2" />
+<file name="add-route.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710701660000000" remote="131710701660000000" Dst="2" />
 <file name="add-team.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709745890000000" remote="131710525730000000" Dst="2" />
-<file name="route.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710487593970002" remote="131710525730000000" Dst="2" />
+<file name="route.php" server="147.175.98.151/public_html/RealZaverecne/" local="131711025170000000" remote="131711025170000000" Dst="2" />
+<file name="add-training.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710603829962597" remote="131711028330000000" Dst="2" />
 </dwsync>
