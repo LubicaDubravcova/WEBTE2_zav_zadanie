@@ -4,18 +4,3 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="styles/style.scss">
-<script>
-	function fixSortOnAjax() {
-		var th = $(".sorttable_sorted,.sorttable_sorted_reverse")[0];
-		if(th != undefined) {
-			if ($(th).hasClass("sorttable_sorted")) {
-				$(th).removeClass("sorttable_sorted");
-				sorttable.innerSortFunction.apply(th, []);
-			} else {
-				$(th).removeClass("sorttable_sorted_reverse");
-				sorttable.innerSortFunction.apply(th, []);
-				sorttable.innerSortFunction.apply(th, []);
-			}
-		}
-	};
-</script>

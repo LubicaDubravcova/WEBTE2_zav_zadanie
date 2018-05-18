@@ -30,7 +30,8 @@ function generate_pdf($file)
         echo $pdf;
     }
 }
-$_POST['user']=$_GET['user'];
+$_POST=$_GET;
+
 ob_start();
 include '../ajax/trainings.php';
 $string = ob_get_clean();

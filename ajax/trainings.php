@@ -1,10 +1,12 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
 include_once("../workers/dbConn.php");
+if(isset($_POST["order"])) $ord = $_POST["order"]." ".$_POST["desc"];
+else $ord = "routeID";
 $db = new DBConn();
 $userData = $db->getUserData();
 if (isset($_POST["user"]) && ($_POST["user"]==$userData->ID || $userData->ROLE = "admin")) {
-	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $_POST['user'];
+	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $_POST['user'] . " ORDER BY $ord";
 	$result = $db->getAssoc($sql);
 }
 ?>
