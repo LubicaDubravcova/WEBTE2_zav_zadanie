@@ -30,7 +30,7 @@ if($routeData != null) {
 				<?php if($routeData["TYPE"] == "Verejná"): ?>
 					<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
 				<?php else: ?>
-					<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
+					<th>Farba</th><th>Členovia tímu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
 					<?php if($userData->ROLE == "admin"): ?>
 						<th>Spáva tímov</th>
 					<?php endif; ?>
