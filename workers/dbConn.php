@@ -485,6 +485,55 @@ class DBConn {
 		return $result;
 	}
 
+	// vrati pole obsahujuce mena MEMBERS, id teamu TID a LENGTH nim prejdenu vzdialenost pre zadanu (stafetovu) trasu
+	// zaznamy su usporiadane podla LENGTH zostupne (descending)
+	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
+	function getRelayRouteProgress($routeId) {
+		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(CONCAT(users.FIRSTNAME,\" \",users.SURNAME) SEPARATOR \", \") AS MEMBERS, COALESCE(SUM(trainings.`LENGTH`), 0) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID LEFT JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? OR `trainings`.`USER_ID` IS NULL GROUP BY users_teams.TEAM_ID ORDER BY LENGTH DESC");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('i', $routeId);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+
+		$querryResult = $stmt->get_result();
+
+		$row = $querryResult->fetch_assoc();
+
+		$result = null;
+
+		// nacitam vsetky vysledky
+		if($row != false) {
+
+			$result = array(
+				"MEMBERS" => array(),
+				"TID" => array(),
+				"LENGTH" => array()
+			);
+
+			array_push($result["MEMBERS"], $row["MEMBERS"]);
+			array_push($result["TID"], $row["TID"]);
+			array_push($result["LENGTH"], $row["LENGTH"]);
+
+			while(($row = $querryResult->fetch_assoc()) != false) {
+				array_push($result["MEMBERS"], $row["MEMBERS"]);
+				array_push($result["TID"], $row["TID"]);
+				array_push($result["LENGTH"], $row["LENGTH"]);
+			}
+		}
+
+		$stmt->close();
+
+		return $result;
+	}
+
 	function loadCSV($fileName) {
 		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);

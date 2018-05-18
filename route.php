@@ -19,6 +19,9 @@ if(isset($_GET["routeId"])) {
 	else if($route["TYPE"] == "Verejná") {
 		$progress = $db->getPublicRouteProgress($_GET["routeId"]);
 	}
+	else if($route["TYPE"] == "Štafeta") {
+		$progress = $db->getRelayRouteProgress($_GET["routeId"]);
+	}
 
 	// pridanie palety farieb
 	require_once ("workers/routeColorPalette.php");
@@ -86,7 +89,7 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<?php if($route["TYPE"] != "Súkromná"): ?>
+				<?php if($route["TYPE"] == "Verejná"): ?>
 				<div class="table-responsive">
 					<table class="table-hover">
 						<tr>
@@ -110,6 +113,31 @@ else {
 						<?php endfor; ?>
 					</table>
 				</div>
+				<?php endif; ?>
+				<?php if($route["TYPE"] == "Štafeta"): ?>
+					<div class="table-responsive">
+						<table class="table-hover">
+							<tr>
+								<th>Farba</th><th>Členovia týmu</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
+							</tr>
+							<?php for($i = 0; $i < count($progress["MEMBERS"]); $i++): ?>
+								<tr>
+									<td>
+										<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
+									</td>
+									<td>
+										<?php echo $progress["MEMBERS"][$i]; ?>
+									</td>
+									<td>
+										<?php echo ($progress["LENGTH"][$i]/1000)."km"; ?>
+									</td>
+									<td>
+										<?php echo ($progress["LENGTH"][$i]/$route["LENGTH"]*100)."%"; ?>
+									</td>
+								</tr>
+							<?php endfor; ?>
+						</table>
+					</div>
 				<?php endif; ?>
 			</div>
 		</div>
