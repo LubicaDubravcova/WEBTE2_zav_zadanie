@@ -13,20 +13,12 @@
         </div>
     </div>
 
+	<div class='row'><div class='btn btn-block btn-danger disabled' style="display: none" id="activeWrong">Zvolenú trasu nie je možné nastaviť ako aktívnu.</div></div>
+
     <div class="row justify-content-center bg-light text-dark rounded p-5">
         <?php if ($role == "admin") :?>
-            <div class="container">
-                <form class="form-horizontal" action="routes.php">
-                    <div class="form-group">
-                        <label for="sel1">Užívateľ: </label>
-                        <select class="form-control" id="sel1">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                        </select>
-                    </div>
-                </form>
+            <div class="container" id="select">
+
             </div>
         <?php endif; ?>
         <div class="col">
@@ -69,14 +61,22 @@ function reloadContent() {
 		}
 	});
 }
+function loadUsers() {
+    $("#select").load("workers/selectUser.php",function(){});
+}
 $(document).on("click", '.routeSelector', function(event) {
     event.stopPropagation();
-    $.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){if (data == "1") reloadContent()});
+    $.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){if (data == "1") reloadContent(); else {document.getElementById("activeWrong").style.display = "block"; setTimeout(hideActionWrong, 5000);}});
 });
 $(document).ready(function(){
 	reloadContent();
+	loadUsers();
 	setInterval(reloadContent,5000);
 });
+
+function hideActionWrong() {
+	document.getElementById("activeWrong").style.display = "none";
+}
 </script>
 </body>
 </html>

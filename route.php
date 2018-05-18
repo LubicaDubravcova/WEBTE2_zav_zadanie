@@ -105,7 +105,7 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<?php if($routeAccess): ?>
+				<?php if($route["TYPE"] != "Súkromná"): ?>
 				<div class="row my-4">
 					<div class="table-responsive">
 						<table class="table-hover sortable">
@@ -125,6 +125,11 @@ else {
 							</tbody>
 						</table>
 					</div>
+				</div>
+				<?php endif; ?>
+				<?php if($route["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+				<div class="row my-4">
+					<a class="btn" href="add-team.php?routeID=<?php echo $_GET["routeId"]; ?>">Pridať tím</a>
 				</div>
 				<?php endif; ?>
 			</div>
