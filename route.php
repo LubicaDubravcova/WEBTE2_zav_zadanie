@@ -105,7 +105,7 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
-				<?php if($routeAccess): ?>
+				<?php if($route["TYPE"] != "Súkromná"): ?>
 				<div class="row my-4">
 					<div class="table-responsive">
 						<table class="table-hover sortable">
