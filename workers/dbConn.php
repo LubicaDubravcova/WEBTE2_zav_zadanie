@@ -485,6 +485,55 @@ class DBConn {
 		return $result;
 	}
 
+	// vrati pole obsahujuce mena MEMBERS, id teamu TID a LENGTH nim prejdenu vzdialenost pre zadanu (stafetovu) trasu
+	// zaznamy su usporiadane podla LENGTH zostupne (descending)
+	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
+	function getRelayRouteProgress($routeId) {
+		$stmt = $this->db->prepare("SELECT named_users.TID, GROUP_CONCAT(named_users.NAME SEPARATOR \", \") AS MEMBERS, SUM(`trainings`.`LENGTH`) AS LENGTH FROM (SELECT part_users.UID, part_users.TID, CONCAT(`users`.`FIRSTNAME`,\" \", `users`.`SURNAME`) AS NAME FROM (SELECT `users_teams`.`USER_ID` AS UID , `users_teams`.`TEAM_ID` as TID FROM (SELECT `teams`.`ID` AS TID FROM `teams` WHERE `teams`.`ROUTE_ID` = ?) AS part_teams JOIN `users_teams` ON `users_teams`.`TEAM_ID` = part_teams.TID) AS part_users JOIN `users` ON `users`.`ID` = part_users.UID) AS named_users JOIN `trainings` ON `trainings`.`USER_ID` = named_users.UID WHERE `trainings`.`ROUTE_ID` = ? GROUP BY named_users.TID ORDER BY LENGTH DESC ");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('ii', $routeId, $routeId);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+
+		$querryResult = $stmt->get_result();
+
+		$row = $querryResult->fetch_assoc();
+
+		$result = null;
+
+		// nacitam vsetky vysledky
+		if($row != false) {
+
+			$result = array(
+				"MEMBERS" => array(),
+				"TID" => array(),
+				"LENGTH" => array()
+			);
+
+			array_push($result["MEMBERS"], $row["MEMBERS"]);
+			array_push($result["TID"], $row["TID"]);
+			array_push($result["LENGTH"], $row["LENGTH"]);
+
+			while(($row = $querryResult->fetch_assoc()) != false) {
+				array_push($result["MEMBERS"], $row["MEMBERS"]);
+				array_push($result["TID"], $row["TID"]);
+				array_push($result["LENGTH"], $row["LENGTH"]);
+			}
+		}
+
+		$stmt->close();
+
+		return $result;
+	}
+
 	function loadCSV($fileName) {
 		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);
