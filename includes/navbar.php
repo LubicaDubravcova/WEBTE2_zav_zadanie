@@ -34,9 +34,11 @@ if (isset($_SESSION["login"])) {
 				<li class="nav-item"><a class="nav-link" href="index.php">Domov</a>
 				<?php if ($role == "user"): //Stránky ktoré sa zobrazia po prihlaseni sem ?>
                 <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
+                <li class="nav-item"><a class="nav-link" href="trainings.php">Tréningy</a>
 				<?php elseif ($role == "admin"): //Stránky ktoré sa zobrazia administrátorovi, ak sa nejaka zobrazuje obom tak ju dajte aj sem ?>
                 <li class="nav-item"><a class="nav-link" href="users.php">Užívatelia</a>
                 <li class="nav-item"><a class="nav-link" href="routes.php">Zoznam trás</a>
+                <li class="nav-item"><a class="nav-link" href="trainings.php">Tréningy</a>
 				<?php endif; ?>
 			</ul>
 			<ul class="navbar-nav ml-auto"> <!-- prave menu -->

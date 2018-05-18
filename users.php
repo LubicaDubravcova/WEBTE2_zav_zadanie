@@ -40,7 +40,7 @@ $assoc = $db->getAssoc($sql);
                 </thead>
                 <tbody>
                 <?php foreach($assoc as $user): ?>
-                    <tr class='clickable-row' data-href='index.php?open=<?php echo $user["ID"]; ?>'>
+                    <tr class='clickable-row' data-href='trainings.php?open=<?php echo $user["ID"]; ?>'>
                         <td><?php echo $user["ID"]; ?></td>
                         <td><?php echo $user["NAME"]; ?></td>
                         <td><?php echo $user["ADDRESS"]; ?></td>
