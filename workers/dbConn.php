@@ -489,7 +489,7 @@ class DBConn {
 	// zaznamy su usporiadane podla LENGTH zostupne (descending)
 	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
 	function getRelayRouteProgress($routeId) {
-		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID, GROUP_CONCAT(CONCAT(users.FIRSTNAME,\" \",users.SURNAME) SEPARATOR \", \") AS MEMBERS, SUM(trainings.`LENGTH`) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID INNER JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? GROUP BY users_teams.TEAM_ID ORDER BY LENGTH DESC");
+		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(CONCAT(users.FIRSTNAME,\" \",users.SURNAME) SEPARATOR \", \") AS MEMBERS, COALESCE(SUM(trainings.`LENGTH`), 0) AS LENGTH FROM users INNER JOIN users_teams ON users_teams.USER_ID = users.ID LEFT JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? OR `trainings`.`USER_ID` IS NULL GROUP BY users_teams.TEAM_ID ");
 
 		if ($stmt === false) {
 			trigger_error($this->db->error, E_USER_ERROR);
