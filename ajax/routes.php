@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-include_once("workers/dbConn.php");
+include_once("../workers/dbConn.php");
 $db = new DBConn();
 $userData = $db->getUserData();
 $id = $_POST['id'];
