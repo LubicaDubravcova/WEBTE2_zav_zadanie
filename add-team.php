@@ -101,7 +101,7 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
                     <button type="submit" class="btn btn-dark btn-lg btn-block"><?php if($_GET['teamID'] == "") echo "Vytvor tím"; else echo "Edituj tím"; ?></button>
                 </div>
                 <div class="form-group row">
-                    <a href="login.php" class="btn btn-block btn-default bg-white">Naspäť k podrobnostiam trasy</a> <!--TODO dat spravny href ked bude stranka existovat-->
+                    <a href="route.php?routeId=<?php echo $routeID; ?>" class="btn btn-block btn-default bg-white">Naspäť k podrobnostiam trasy</a>
                 </div>
             </form>
         </div>

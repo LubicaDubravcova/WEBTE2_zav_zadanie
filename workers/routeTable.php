@@ -60,7 +60,7 @@ if($routeData != null) {
 					</td>
 					<?php if($routeData["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
 					<td>
-						<a class="btn" href="add-team.php?teamID=<?php echo $routeProgress["TID"][$i]; ?>">Upraviť tím</a>
+						<a class="btn" href="add-team.php?teamID=<?php echo $routeProgress["TID"][$i]; ?>&routeID=<?php echo $_POST["routeId"]; ?>">Upraviť tím</a>
 					</td>
 					<?php endif; ?>
 				</tr>
