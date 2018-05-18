@@ -1,12 +1,4 @@
-var ROUTE_COLOR = "#999999";
-var SUBROUTE_COLORS = [
-	"#FF0000",
-	"#FFFF00",
-	"#00FF00",
-	"#00FFFF",
-	"#0000FF",
-	"#FF00FF"
-];
+// VYZADUJE COLOR PALETTE
 
 // globalne premenne
 var directionsDisplay;
@@ -103,8 +95,6 @@ function renderPath(path, color) {
 		strokeOpacity: 1.0,
 		strokeWeight: 5
 	});
-
-	console.log(newPath);
 
 	newPath.setMap(map);
 }

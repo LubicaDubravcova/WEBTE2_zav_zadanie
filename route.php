@@ -19,6 +19,9 @@ if(isset($_GET["routeId"])) {
 	else if($route["TYPE"] == "Verejná") {
 		$progress = $db->getPublicRouteProgress($_GET["routeId"]);
 	}
+
+	// pridanie palety farieb
+	require_once ("workers/routeColorPalette.php");
 }
 else {
 	// presmerujem inam
@@ -37,6 +40,11 @@ else {
 	<style>
 		#map {height: 500px;}
 		#map .selected {font-weight: 500; color: black!important;}
+		.legenColorBlock {
+			display: inline-block;
+			width: 20px;
+			height: 15px;
+		}
 	</style>
 </head>
 <body class="bg-dark text-white">
@@ -78,11 +86,37 @@ else {
 						<div id="map" class="w-100"></div>
 					</div>
 				</div>
+				<?php if($route["TYPE"] != "Súkromná"): ?>
+				<div class="table-responsive">
+					<table class="table-hover">
+						<tr>
+							<th>Farba</th><th>Meno</th><th>Prejdená vzdialenosť</th><th>Prejdená časť</th>
+						</tr>
+						<?php for($i = 0; $i < count($progress["NAME"]); $i++): ?>
+						<tr>
+							<td>
+								<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
+							</td>
+							<td>
+								<?php echo $progress["NAME"][$i]; ?>
+							</td>
+							<td>
+								<?php echo $progress["LENGTH"][$i]; ?>
+							</td>
+							<td>
+								<?php echo ($progress["LENGTH"][$i]/$route["LENGTH"]*100)."%"; ?>
+							</td>
+						</tr>
+						<?php endfor; ?>
+					</table>
+				</div>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php endif; ?>
 	</div>
 	<?php require("includes/footer.php");?>
+	<?php if($routeAccess) routeColorPalette::addToJavascript(); ?>
 	<?php if($routeAccess): ?>
 	<script type="text/javascript" src="scripts/displayRoute.js"></script>
 	<script type="text/javascript">
