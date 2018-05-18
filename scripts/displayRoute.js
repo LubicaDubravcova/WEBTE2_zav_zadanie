@@ -54,39 +54,41 @@ function displayRoute(route, subdistances = []) {
 	// vycentrujem pohlad na trasu
 	map.fitBounds(routeBoundaries);
 
-	// usporiadam skratene useky od najvacsieho, nech sa nezakryvaju ciary
-	subdistances.sort(); // ascending
-	subdistances.reverse(); // descending
+	if(subdistances) {
+		// usporiadam skratene useky od najvacsieho, nech sa nezakryvaju ciary
+		subdistances.sort(); // ascending
+		subdistances.reverse(); // descending
 
-	// vytvorim ciary pre skratene useky
-	for(i = 0; i < subdistances.length; i++) {
-		// najdem cast celkovej trate, ktora je uz predena
-		var bound = upperBound(cummulativeDist, 0, cummulativeDist.length-1, subdistances[i]);
+		// vytvorim ciary pre skratene useky
+		for(i = 0; i < subdistances.length; i++) {
+			// najdem cast celkovej trate, ktora je uz predena
+			var bound = upperBound(cummulativeDist, 0, cummulativeDist.length-1, subdistances[i]);
 
-		if(bound == -1) {
-			// prejdena trat je > ako cielova => vykreslim celu
-			renderPath(route, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
-		}
-		else {
-			// prejdena trat je kratsia => trafil som nahodou presne? (skoro urcite nie, kedze mame realne cisla....)
-			if(subdistances[i] == cummulativeDist[bound]) {
-				// presne => iba vykreslim
-				renderPath(route.slice(0, bound+1), SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+			if(bound == -1) {
+				// prejdena trat je > ako cielova => vykreslim celu
+				renderPath(route, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
 			}
 			else {
-				// musim dopocitat novy koncovy bod
-				var distDif = cummulativeDist[bound] - subdistances[i]; // rozdiel kumulativnej vzdialenosti pri vacsom bode a aktualnej
-				var pointDistDif = cummulativeDist[bound] - cummulativeDist[bound-1]; // rozdiel medzi poslednymi bodmi
-				var percentage = distDif/pointDistDif; // podiel rozdielov
+				// prejdena trat je kratsia => trafil som nahodou presne? (skoro urcite nie, kedze mame realne cisla....)
+				if(subdistances[i] == cummulativeDist[bound]) {
+					// presne => iba vykreslim
+					renderPath(route.slice(0, bound+1), SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+				}
+				else {
+					// musim dopocitat novy koncovy bod
+					var distDif = cummulativeDist[bound] - subdistances[i]; // rozdiel kumulativnej vzdialenosti pri vacsom bode a aktualnej
+					var pointDistDif = cummulativeDist[bound] - cummulativeDist[bound-1]; // rozdiel medzi poslednymi bodmi
+					var percentage = distDif/pointDistDif; // podiel rozdielov
 
-				var latDif = route[bound].lat() - route[bound-1].lat(); // rozdiel latitude
-				var lngDif = route[bound].lng() - route[bound-1].lng(); // rozdiel longtitude
+					var latDif = route[bound].lat() - route[bound-1].lat(); // rozdiel latitude
+					var lngDif = route[bound].lng() - route[bound-1].lng(); // rozdiel longtitude
 
-				var subPath = route.slice(0, bound);
-				subPath.push(new google.maps.LatLng(route[bound-1].lat() + latDif*percentage, route[bound-1].lng() + lngDif*percentage));
+					var subPath = route.slice(0, bound);
+					subPath.push(new google.maps.LatLng(route[bound-1].lat() + latDif*percentage, route[bound-1].lng() + lngDif*percentage));
 
-				// vykreslim
-				renderPath(subPath, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+					// vykreslim
+					renderPath(subPath, SUBROUTE_COLORS[i%SUBROUTE_COLORS.length]);
+				}
 			}
 		}
 	}

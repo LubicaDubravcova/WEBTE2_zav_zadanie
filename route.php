@@ -11,6 +11,11 @@ if(isset($_GET["routeId"])) {
 		header('Location: index.php');
 		die();
 	}
+	// else ziskam progress
+	$progress = null;
+	if($route["TYPE"] == "Súkromná") {
+		$progress = $db->getPrivateRouteProgress($_GET["routeId"]);
+	}
 }
 else {
 	// presmerujem inam
@@ -83,6 +88,18 @@ else {
 
 		function callback() {
 			var encodedPath = <?php echo json_encode($route["PATH"]); ?>;
+			var progress;
+			<?php
+				if($progress != null) {
+					// treba extra osetrit private trasu, lebo funkcia na zobrazenie vyzaduje array
+					if($route["TYPE"] = "Súkromná") {
+						echo "progress = [".$progress["LENGTH"]."]";
+					}
+					else {
+						echo "progress =".json_encode($progress["LENGTH"]);
+					}
+				}
+			?>
 
 			// prekonvertujem path z encoded verzie na decoded
 			var decodedPath = google.maps.geometry.encoding.decodePath(encodedPath);
@@ -92,7 +109,7 @@ else {
 
 			// az potom mozeme vykreslit trasu
 			// TODO pole s vykonmi
-			displayRoute(decodedPath, []);
+			displayRoute(decodedPath, progress);
 		}
 	</script>
 	<?php endif; ?>

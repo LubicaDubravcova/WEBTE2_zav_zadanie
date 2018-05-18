@@ -414,6 +414,33 @@ class DBConn {
 		return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
 	}
 
+	// vrati celkovu vzdialenost (v metroch) odjazdenu pre zadanu (private) trasu
+	// pokial zadana trasa nie je priavte vrati 0
+	function getPrivateRouteProgress($routeId) {
+    	$stmt = $this->db->prepare("SELECT `routes`.`ID` as RID, `routes`.`TYPE` as TYPE, SUM(`trainings`.`LENGTH`) as LENGTH FROM `routes` JOIN `trainings` ON `routes`.`ID` = `trainings`.`ROUTE_ID` WHERE `routes`.ID = ? AND `trainings`.`USER_ID` = (SELECT `routes`.`OWNER` WHERE `routes`.`ID` = ?) GROUP BY `routes`.`ID`");
+
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		// ano je tam 2x to iste ID, lebo raz je pre vyber trasy a raz v sub-query pre vyber jej majtela
+		$stmt->bind_param('ii', $routeId, $routeId);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+		$result = $stmt->get_result()->fetch_assoc();
+		$stmt->close();
+
+		if($result != null && $result["TYPE"] != "Súkromná") {
+			$result["LENGTH"] = 0;
+		}
+
+		return $result;
+	}
+
 	function loadCSV($fileName) {
 		if (!$this->isAdmin()) return false;
 		$csv = new CsvImporter($fileName, true);
