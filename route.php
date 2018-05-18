@@ -101,7 +101,7 @@ else {
 								<?php echo $progress["NAME"][$i]; ?>
 							</td>
 							<td>
-								<?php echo $progress["LENGTH"][$i]; ?>
+								<?php echo ($progress["LENGTH"][$i]/1000)."km"; ?>
 							</td>
 							<td>
 								<?php echo ($progress["LENGTH"][$i]/$route["LENGTH"]*100)."%"; ?>
