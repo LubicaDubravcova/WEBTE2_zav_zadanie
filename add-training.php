@@ -190,7 +190,7 @@
 						<input type="time" name="time_end" id="time_end" class="form-control">
 
 						<label for="rating">Subjektívne hodnotenie tréningu:</label><br>
-						<label class="radio-inline"><input type="radio" name="rating" value="1">:&#593;</label>
+						<label class="radio-inline"><input type="radio" name="rating" value="1">:&#5601;</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="2">:(</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="3">:|</label>
 						<label class="radio-inline"><input type="radio" name="rating" value="4">:)</label>

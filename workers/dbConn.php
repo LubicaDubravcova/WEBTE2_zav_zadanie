@@ -253,6 +253,27 @@ class DBConn {
         return $this->db->query("SELECT LAST_INSERT_ID();")->fetch_array()[0];
     }
 
+    function deleteTeam($teamID) { // deletne team a vrati TRUE ak bol uspesny
+        $stmt = $this->db->prepare("DELETE FROM teams WHERE ID=?");
+
+        if ($stmt === false) {
+            trigger_error($this->db->error, E_USER_ERROR);
+            return;
+        }
+
+        $stmt->bind_param('i', $teamID);
+
+        /* Execute the prepared Statement */
+        $status = $stmt->execute();
+        /* BK: always check whether the execute() succeeded */
+        if ($status === false) {
+            trigger_error($stmt->error, E_USER_ERROR);
+        } else{
+            $stmt->close();
+            return true;
+		}
+    }
+
     function addToTeam($userID, $teamID){      // prida pouzivatela do timu
 
         $stmt = $this->db->prepare("INSERT INTO users_teams VALUES (?,?)");
@@ -497,19 +518,47 @@ class DBConn {
 
 		return $result;
 	}
-
-	// vrati pole obsahujuce mena MEMBERS, id teamu TID a LENGTH nim prejdenu vzdialenost pre zadanu (stafetovu) trasu
-	// zaznamy su usporiadane podla LENGTH zostupne (descending)
-	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
-	function getRelayRouteProgress($routeId) {
-		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID as TID, GROUP_CONCAT(DISTINCT names.NAME SEPARATOR ', ') AS MEMBERS, COALESCE(SUM(trainings.`LENGTH`)) AS LENGTH FROM (SELECT CONCAT(FIRSTNAME,' ',SURNAME) as NAME, ID FROM users ORDER BY NAME) as names INNER JOIN users ON users.ID = names.ID INNER JOIN users_teams ON users_teams.USER_ID = users.ID LEFT JOIN trainings ON trainings.`USER_ID` = users.ID WHERE trainings.`ROUTE_ID` = ? OR `trainings`.`USER_ID` IS NULL GROUP BY users_teams.TEAM_ID ORDER BY LENGTH DESC");
-
+	function getAllowedRoutes($userID){
+		$stmt = $this->db->prepare("SELECT active.ID FROM ((SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'súkromná' AND routes.OWNER = ? AND trainings.USER_ID = routes.OWNER GROUP BY trainings.ROUTE_ID) 
+        		UNION (SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'verejná' AND trainings.USER_ID = ? GROUP BY trainings.ROUTE_ID) 
+                UNION (SELECT o.ROUTE_ID, o.LENGTH, p.RUN FROM (SELECT teams.ID as TEAM_ID, teams.ROUTE_ID, routes.LENGTH FROM routes INNER JOIN teams ON teams.ROUTE_ID = routes.ID INNER JOIN users_teams ON teams.ID = users_teams.TEAM_ID WHERE users_teams.USER_ID = ?) o INNER JOIN (SELECT SUM(trainings.LENGTH) AS RUN, users_teams.TEAM_ID FROM trainings RIGHT JOIN users_teams on trainings.USER_ID = users_teams.USER_ID GROUP BY users_teams.TEAM_ID) p ON o.TEAM_ID = p.TEAM_ID)) AS active WHERE active.RUN < active.LENGTH");
 		if ($stmt === false) {
 			trigger_error($this->db->error, E_USER_ERROR);
 			return;
 		}
 
-		$stmt->bind_param('i', $routeId);
+		$stmt->bind_param('iii', $userID, $userID, $userID);
+
+		$status = $stmt->execute();
+		if($status === false) {
+			trigger_error($stmt->error, E_USER_ERROR);
+		}
+
+		$array = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+		
+		$stmt->close();
+		return array_column($array,"ID");
+	}
+	// vrati pole obsahujuce mena MEMBERS, id teamu TID a LENGTH nim prejdenu vzdialenost pre zadanu (stafetovu) trasu
+	// zaznamy su usporiadane podla LENGTH zostupne (descending)
+	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
+	function getRelayRouteProgress($routeId) {
+		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(users.FIRSTNAME, \" \", users.SURNAME SEPARATOR \", \") AS MEMBERS, COALESCE(lengths.lng, 0) AS LENGTH FROM teams
+JOIN users_teams ON users_teams.TEAM_ID=teams.ID
+JOIN users ON users.ID=users_teams.USER_ID
+LEFT JOIN 	(SELECT users_teams.TEAM_ID, COALESCE(SUM(trainings.LENGTH), 0) AS lng FROM trainings
+		JOIN routes ON (routes.ID=trainings.ROUTE_ID AND routes.TYPE=\"Štafeta\")
+		JOIN users_teams ON users_teams.USER_ID=trainings.USER_ID
+      	WHERE trainings.ROUTE_ID=?
+		GROUP BY TEAM_ID) AS lengths ON lengths.TEAM_ID=teams.ID
+WHERE teams.ROUTE_ID=?
+GROUP BY teams.ID ORDER BY LENGTH DESC");
+		if ($stmt === false) {
+			trigger_error($this->db->error, E_USER_ERROR);
+			return;
+		}
+
+		$stmt->bind_param('ii', $routeId, $routeId);
 
 		$status = $stmt->execute();
 		if($status === false) {
