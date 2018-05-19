@@ -221,6 +221,7 @@ else {
 			displayRoute(decodedPath, dataArray.LENGTH, false);
 		}
 		
+		//nacita sameho seba (musi byt tbody, nacitava tr), parametre: ID, boolean fixsort - len v pripade ze je to tabulka so sortom, query - ak string tak get, ak object tak post, na poslanie vlastneho pouzite $_SERVER['QUERY_STRING'];
 		selfLoad("#load",true,"routeId=<?php echo $_GET["routeId"];?>");
 		
 		$(document).ready(function(){

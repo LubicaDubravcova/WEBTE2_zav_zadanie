@@ -514,7 +514,6 @@ function selfLoad(id, sortfix, data){
 		else
 			$(id).load(document.URL + " " + id + " tr",data);
 	}
-	loadSelf();
 	setInterval(loadSelf,5000);
 }
 
