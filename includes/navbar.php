@@ -58,7 +58,6 @@ if (isset($_SESSION["login"])) {
 				<div class="dropdown-menu p-1" aria-labelledby="navbarLoginMenuLink">
 					<a class="dropdown-item" href="add-route.php">Vytvor trasu</a>
 					<a class="dropdown-item" href="add-training.php">Pridaj tréning</a>
-					<a class="dropdown-item" href="add-team.php">Vytvor tím</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="add-news.php">Pridaj aktualitu</a>
 					<div class="dropdown-divider"></div>
