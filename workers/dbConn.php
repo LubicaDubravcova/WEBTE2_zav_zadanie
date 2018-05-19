@@ -520,9 +520,9 @@ class DBConn {
 		return $result;
 	}
 	function getAllowedRoutes($userID){
-		$stmt = $this->db->prepare("SELECT active.ID FROM ((SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'súkromná' AND routes.OWNER = ? AND trainings.USER_ID = routes.OWNER GROUP BY trainings.ROUTE_ID) 
-        		UNION (SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'verejná' AND trainings.USER_ID = ? GROUP BY trainings.ROUTE_ID) 
-                UNION (SELECT o.ROUTE_ID, o.LENGTH, p.RUN FROM (SELECT teams.ID as TEAM_ID, teams.ROUTE_ID, routes.LENGTH FROM routes INNER JOIN teams ON teams.ROUTE_ID = routes.ID INNER JOIN users_teams ON teams.ID = users_teams.TEAM_ID WHERE users_teams.USER_ID = ?) o INNER JOIN (SELECT SUM(trainings.LENGTH) AS RUN, users_teams.TEAM_ID FROM trainings RIGHT JOIN users_teams on trainings.USER_ID = users_teams.USER_ID GROUP BY users_teams.TEAM_ID) p ON o.TEAM_ID = p.TEAM_ID)) AS active WHERE active.RUN < active.LENGTH");
+		$stmt = $this->db->prepare("SELECT active.ID FROM ((SELECT routes.ID, routes.LENGTH, COALESCE(SUM(trainings.LENGTH),0) AS RUN FROM `routes` LEFT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'súkromná' AND routes.OWNER = ? AND (trainings.USER_ID = routes.OWNER OR trainings.USER_ID IS NULL) GROUP BY routes.ID) 
+        		UNION (SELECT routes.ID, routes.LENGTH, COALESCE(SUM(trainings.LENGTH),0) AS RUN FROM `routes` LEFT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'verejná' AND (trainings.USER_ID = ? OR ? NOT IN (SELECT USER_ID FROM trainings WHERE ROUTE_ID = routes.ID)) GROUP BY routes.ID)
+                UNION (SELECT o.ROUTE_ID, o.LENGTH, p.RUN FROM (SELECT teams.ID as TEAM_ID, teams.ROUTE_ID, routes.LENGTH FROM routes INNER JOIN teams ON teams.ROUTE_ID = routes.ID INNER JOIN users_teams ON teams.ID = users_teams.TEAM_ID WHERE users_teams.USER_ID = ?) o INNER JOIN (SELECT COALESCE(SUM(trainings.LENGTH),0) AS RUN, users_teams.TEAM_ID FROM trainings RIGHT JOIN users_teams on trainings.USER_ID = users_teams.USER_ID GROUP BY users_teams.TEAM_ID) p ON o.TEAM_ID = p.TEAM_ID)) AS active WHERE active.RUN < active.LENGTH");
 		if ($stmt === false) {
 			trigger_error($this->db->error, E_USER_ERROR);
 			return;
