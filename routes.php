@@ -70,7 +70,7 @@
 
 							{$routeactive = true; echo 1;} else echo 2;
                             ?>">
-                            <?php if (($user["ID"] == $userData->ID && $user["TYPE"] == "Súkromná") || ($user["TYPE"] == "Verejná")):?>
+                            <?php if (($user["ID"] == $userData->ID && $user["TYPE"] == "Súkromná") || ($user["TYPE"] == "Verejná") || ($user["TYPE"] == "Štafeta")):?>
 								<a class="<?php if($routeactive) echo "selected "; ?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
                             <?php else:?>
                                 <a class="<?php echo "disabled "; ?>routeSelector"></a>
