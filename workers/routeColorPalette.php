@@ -10,7 +10,13 @@ class routeColorPalette
 		"#00FF00",
 		"#00FFFF",
 		"#0000FF",
-		"#FF00FF"
+		"#FF00FF",
+		"#AF0000",
+		"#AFAF00",
+		"#00AF00",
+		"#00AFAF",
+		"#0000AF",
+		"#AF00AF"
 	];
 
 	// prida farby ako javascript premenne
