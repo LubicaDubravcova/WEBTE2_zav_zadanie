@@ -79,13 +79,13 @@ else {
 			<div class="col-10">
 				<div class="row my-4">
 					<div class="col">
-						<h3 class="m-4 d-inline-block">Dĺžka: <?php echo $route["LENGTH"]/1000 . "km" ?></h3>
+						<h3 class="m-4 d-inline-block">Dĺžka: <?php echo number_format($route["LENGTH"]/1000,2,","," "). "km" ?></h3>
 					</div>
 				</div>
 				<?php if($route["TYPE"] == "Súkromná"): ?>
 				<div class="row my-4">
 					<div class="col">
-						<h3 class="m-4 d-inline-block">Prekonaná vzdialenosť: <?php echo ($progress["LENGTH"]/1000)."km"; ?></h3>
+						<h3 class="m-4 d-inline-block">Prekonaná vzdialenosť: <?php echo  number_format($progress["LENGTH"]/1000,2,","," ")."km"; ?></h3>
 					</div>
 				</div>
 				<div class="row my-4">
@@ -93,7 +93,7 @@ else {
 						<h3 class="m-4 d-inline-block">Prekonaná časť: <?php
 							$percento = ($progress["LENGTH"]/$route["LENGTH"]*100);
 							if($percento > 100) echo "100%";
-							else echo $percento."%";
+							else echo number_format($percento,2,","," ")."%";
 							?></h3>
 					</div>
 				</div>
