@@ -6,15 +6,17 @@ class routeColorPalette
 	// farby progressov
 	public static $subrouteColors = [
 		"#FF0000",
-		"#FF7F00",
 		"#FFFF00",
-		"#7FFF00",
 		"#00FF00",
-		"#00FF7F",
 		"#00FFFF",
-		"#007FFF",
 		"#0000FF",
-		"#7F00FF"
+		"#FF00FF",
+		"#7F0000",
+		"#7F7F00",
+		"#007F00",
+		"#007F7F",
+		"#00007F",
+		"#7F007F"
 	];
 
 	// prida farby ako javascript premenne
