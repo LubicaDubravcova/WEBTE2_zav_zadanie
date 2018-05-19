@@ -1,14 +1,20 @@
 <?php
 $defaultPass = "defaultPass1234";
 class DBConn {
-    private $dbHost = "localhost";
+    private $dbHost;
     private $userTable = "users";
-	private $dbName = "zaverecne";
-	private $dbLogin = "batman";
-	private $dbPass = "robin";
+	private $dbName;
+	private $dbLogin;
+	private $dbPass;
     private $db; //pripojenie cez mysqli, na ziskavanie dat pouzivajte toto
 	
     function __construct(){
+		include_once ("../data/config.php");
+    	$this->dbHost = $dbconfig["hostname"];
+		$this->dbName = $dbconfig["dbname"];
+		$this->dbLogin = $dbconfig["username"];
+		$this->dbPass = $dbconfig["password"];
+
         if(!isset($this->db)){
             // Connect to the database
             $conn = new mysqli($this->dbHost, $this->dbLogin, $this->dbPass, $this->dbName);
