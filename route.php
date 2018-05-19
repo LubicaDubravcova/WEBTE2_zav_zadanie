@@ -31,7 +31,6 @@ else {
 	header('Location: index.php');
 	die();
 }
-
 ?>
 
 <!doctype html>
@@ -66,7 +65,6 @@ else {
 	else if($route["OWNER"] == $userData->ID) {
 		$routeAccess = true;
 	}
-
 	?>
 	<div class="container text-center">
 		<?php if(!$routeAccess): ?>
@@ -114,14 +112,44 @@ else {
 								<?php if($route["TYPE"] == "Verejná"): ?>
 									<th>Farba</th><th>Meno</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
 								<?php else: ?>
-									<th>Farba</th><th>Členovia týmu</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
+									<th>Farba</th><th>Členovia tímu</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
 								<?php if(($userData->ROLE == "admin")): ?>
-									<th class="sorttable_nosort">Spáva tímov</th>
+									<th class="sorttable_nosort">Správa tímov</th>
 								<?php endif; ?>
 								<?php endif; ?>
 								</tr>
 							</thead>
 							<tbody id="load">
+							<?php for($i = 0; $i < count($progress["LENGTH"]); $i++): ?>
+								<tr>
+									<td sorttable_customkey="<?php echo $i?>">
+										<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
+									</td>
+									<td>
+										<?php
+										if($route["TYPE"] == "Verejná") {
+											echo $progress["NAME"][$i];
+										}
+										else {
+											echo $progress["MEMBERS"][$i];
+										}
+										?>
+									</td>
+									<td>
+										<?php echo number_format($progress["LENGTH"][$i]/1000,2,","," ")."km"; ?>
+									</td>
+									<td>
+										<?php $percento = ($progress["LENGTH"][$i]/$route["LENGTH"]*100);
+										if($percento > 100) echo "100%";
+										else echo number_format($percento,2,","," ")."%"; ?>
+									</td>
+									<?php if($route["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+									<td>
+										<a class="btn" href="add-team.php?teamID=<?php echo $progress["TID"][$i]; ?>&routeID=<?php echo $_GET["routeId"]; ?>">Upraviť tím</a>
+									</td>
+									<?php endif; ?>
+								</tr>
+							<?php endfor; ?>
 							</tbody>
 						</table>
 					</div>
@@ -175,34 +203,24 @@ else {
 
 		function AjaxMap() {
 			// AJAX pre update tras na mape
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					updateDisplay(JSON.parse(this.responseText));
-				}
-			};
-			xhttp.open("POST", "ajax/routeData.php", true);
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.send("routeId=<?php echo $_GET["routeId"]; ?>");
+			$.post("workers/routeData.php",{routeId: "<?php echo $_GET["routeId"];?>"}, updateDisplay);
 		}
 
-		function updateDisplay(dataArray) {
+		function updateDisplay(data) {
 			// prekreslenie mapy
+			var dataArray = JSON.parse(data);
 			removePolylines();
 			displayRoute(decodedPath, dataArray.LENGTH, false);
 		}
-
-		function AjaxTable() {
-			$("#load").load("ajax/routeTable.php",{routeId: "<?php echo $_GET["routeId"];?>"},fixSortOnAjax);
-		}
+		
+		//nacita sameho seba (musi byt tbody, nacitava tr), parametre: ID, boolean fixsort - len v pripade ze je to tabulka so sortom, query - ak string tak get, ak object tak post, na poslanie vlastneho pouzite $_SERVER['QUERY_STRING'];
+		selfLoad("#load",true,"routeId=<?php echo $_GET["routeId"];?>");
+		
 		$(document).ready(function(){
 			setInterval(AjaxMap, 5000);
-			AjaxTable();
-			setInterval(AjaxTable,5000);
 		});
 	</script>
 	<?php endif; endif;?>
-	<script src="scripts/sorttable.js"></script>
 </body>
 </html>
 

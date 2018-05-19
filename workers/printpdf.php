@@ -30,10 +30,9 @@ function generate_pdf($file)
         echo $pdf;
     }
 }
-$_POST=$_GET;
-
+$printPDF = true;
 ob_start();
-include '../ajax/trainings.php';
+include '../trainings.php';
 $string = ob_get_clean();
 generate_pdf($string);
 ?>

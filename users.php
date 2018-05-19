@@ -38,9 +38,9 @@ $assoc = $db->getAssoc($sql);
                     <th>Škola</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="load">
                 <?php foreach($assoc as $user): ?>
-                    <tr class='clickable-row' data-href='trainings.php?open=<?php echo $user["ID"]; ?>'>
+                    <tr class='clickable-row' data-href='trainings.php?id=<?php echo $user["ID"]; ?>'>
                         <td><?php echo $user["ID"]; ?></td>
                         <td><?php echo $user["NAME"]; ?></td>
                         <td><?php echo $user["ADDRESS"]; ?></td>
@@ -61,7 +61,7 @@ $assoc = $db->getAssoc($sql);
         </div>
     </div>
 </div>
-<script src="scripts/sorttable.js"></script>
+<script>selfLoad("#load",true);</script>
 <?php require("includes/footer.php");?>
 </body>
 </html>
