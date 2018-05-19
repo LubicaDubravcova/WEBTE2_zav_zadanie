@@ -31,7 +31,6 @@ else {
 	header('Location: index.php');
 	die();
 }
-
 ?>
 
 <!doctype html>

@@ -1,8 +1,3 @@
-<?php
-header('Content-Type: text/html; charset=utf-8');
-include_once("workers/dbConn.php");
-
-?>
 <!doctype html>
 <html>
 <head>
@@ -10,17 +5,18 @@ include_once("workers/dbConn.php");
     <?php require("includes/head.php");?>
 </head>
 <body class="bg-dark text-white">
-<?php require("includes/navbar.php");
-$id_record = $_GET['open'];
-$db = new DBConn();
-if (!$id_record) {
-	$id_record = $userData->ID;
-	$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $userData->ID;
-	$result = $db->getAssoc($sql);
-} elseif($userData->ROLE == "admin") {
-    $sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=" . $id_record;
-	$result = $db->getAssoc($sql);
-}
+<?php if(!$printPDF) require("includes/navbar.php");
+	else {
+		include_once("dbConn.php");
+		$db = new DBConn();
+		$userData = $db->getUserData();
+	}
+if(isset($_GET["order"]) && $_GET["order"] != "undefined") $ord = $_GET["order"]." ".$_GET["desc"];
+else $ord = "routeID";
+$id_record = $_GET['id'];
+if (($userData->ROLE != "admin") || !$id_record) $id_record = $userData->ID;
+$sql = "SELECT routes.ID AS routeID, `NAME`, `DATE`, trainings.LENGTH, START_TIME, END_TIME, START_LAT, START_LNG, END_LAT, END_LNG, RATING, NOTES FROM trainings JOIN routes ON trainings.ROUTE_ID=routes.ID WHERE USER_ID=$id_record ORDER BY $ord";
+$result = $db->getAssoc($sql);
 ?>
 <div class="container text-center">
     <div class="row">
@@ -98,18 +94,15 @@ if (!$id_record) {
                     </tbody>
                 </table>
             </div>
+            <?php if(!$printPDF):?>
             <a id="savepdf" href="workers/printpdf.php?user=<?php echo $id_record?>"class="btn btn-dark text-white">Uložiť PDF</a>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 <?php require("includes/footer.php");?>
 <script type="text/javascript">
-	
-function MyPrint() {
-	var selectBox = document.getElementById("sel");
-	var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-}
-	
+
 function reloadContent() {
 	$("#loadTable").load(document.URL + " #loadTable tr","<?php echo $_SERVER['QUERY_STRING'];?>",function(data){
 		$("#loadAverage").html($(data).find("#loadAverage").html());
@@ -124,9 +117,9 @@ $("#savepdf").click(function(e){
 	var $th = $(".sorttable_sorted,.sorttable_sorted_reverse");
 	var ord = $th.data("order");
 	if ($th.hasClass("sorttable_sorted"))
-		window.location = this.href + "&order=" + ord + "&desc=desc";
-	else 
 		window.location = this.href + "&order=" + ord;
+	else 
+		window.location = this.href + "&order=" + ord + "&desc=desc";
 });
 </script>
 </body>
