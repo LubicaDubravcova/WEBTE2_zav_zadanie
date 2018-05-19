@@ -112,9 +112,9 @@ else {
 								<?php if($route["TYPE"] == "Verejná"): ?>
 									<th>Farba</th><th>Meno</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
 								<?php else: ?>
-									<th>Farba</th><th>Členovia týmu</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
+									<th>Farba</th><th>Členovia tímu</th><th class="sorttable_numeric">Prejdená vzdialenosť</th><th class="sorttable_numeric">Prejdená časť</th>
 								<?php if(($userData->ROLE == "admin")): ?>
-									<th class="sorttable_nosort">Spáva tímov</th>
+									<th class="sorttable_nosort">Správa tímov</th>
 								<?php endif; ?>
 								<?php endif; ?>
 								</tr>
@@ -145,7 +145,7 @@ else {
 									</td>
 									<?php if($route["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
 									<td>
-										<a class="btn" href="add-team.php?teamID=<?php echo $progress["TID"][$i]; ?>&routeID=<?php echo $_POST["routeId"]; ?>">Upraviť tím</a>
+										<a class="btn" href="add-team.php?teamID=<?php echo $progress["TID"][$i]; ?>&routeID=<?php echo $_GET["routeId"]; ?>">Upraviť tím</a>
 									</td>
 									<?php endif; ?>
 								</tr>
