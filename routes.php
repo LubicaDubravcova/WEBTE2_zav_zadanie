@@ -63,9 +63,19 @@
 						<tr class="clickable-row" data-href="route.php?routeId=<?php echo $user["ROUTE_ID"]; ?>">
 							<td><?php echo $user["ROUTE_NAME"]; ?></td>
 							<td><?php echo number_format($user["LENGTH"]/1000,2,","," ")."km"; ?></td>
-							<td sorttable_customkey="<?php $routeactive = false; if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"]){$routeactive = true; echo 1;} else echo 2;?>">
+							<td sorttable_customkey="<?php
+                            $routeactive = false;
+
+							if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"])
+
+							{$routeactive = true; echo 1;} else echo 2;
+                            ?>">
+                            <?php if (($user["ID"] == $userData->ID && $user["TYPE"] == "Súkromná") || ($user["TYPE"] == "Verejná")):?>
 								<a class="<?php if($routeactive) echo "selected "; ?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
-							</td>
+                            <?php else:?>
+                                <a class="<?php echo "disabled "; ?>routeSelector"></a>
+                                <?php endif;?>
+                            </td>
 							<td><?php echo $user["TYPE"]; ?></td>
 							<?php if($userData->ROLE == "admin"): ?>
 								<td><?php echo $user["FIRSTNAME"]." ".$user["SURNAME"]; ?></td>
