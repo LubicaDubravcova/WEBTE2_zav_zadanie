@@ -102,15 +102,6 @@ $result = $db->getAssoc($sql);
 </div>
 <?php require("includes/footer.php");?>
 <script type="text/javascript">
-
-function reloadContent() {
-	$("#loadTable").load(document.URL + " #loadTable tr","<?php echo $_SERVER['QUERY_STRING'];?>",function(data){
-		$("#loadAverage").html($(data).find("#loadAverage").html());
-		fixSortOnAjax();
-	});
-}
-reloadContent();
-setInterval(reloadContent,5000);
 	
 $("#savepdf").click(function(e){
 	e.preventDefault();

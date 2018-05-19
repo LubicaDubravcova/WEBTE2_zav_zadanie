@@ -10,7 +10,7 @@
 	if ($id == "null") $id = null;
 	if ($id!=null) {
 		$sql = "SELECT routes.ID as ROUTE_ID, routes.NAME as ROUTE_NAME, routes.LENGTH, routes.TYPE, users.ID, users.FIRSTNAME, users.SURNAME FROM routes 
-	JOIN users ON routes.OWNER=users.ID WHERE users.ID=" . $id;
+	JOIN users ON routes.OWNER=users.ID WHERE users.ID=$id";
 	}
 	else
 		$sql = "SELECT routes.ID as ROUTE_ID, routes.NAME as ROUTE_NAME, routes.LENGTH, routes.TYPE, users.ID, users.FIRSTNAME, users.SURNAME FROM routes 
@@ -20,6 +20,11 @@
 	$sql = "SELECT DISTINCT users.ID, users.FIRSTNAME, users.SURNAME FROM users 
 	JOIN routes ON users.ID=routes.OWNER";
 	$resultUser = $db->getResult($sql);
+	$sql = "SELECT active.ID FROM ((SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'súkromná' AND routes.OWNER = $userData->ID AND trainings.USER_ID = routes.OWNER GROUP BY trainings.ROUTE_ID) 
+        		UNION (SELECT routes.ID, routes.LENGTH, SUM(trainings.LENGTH) AS RUN FROM `routes` RIGHT JOIN trainings ON routes.ID = trainings.ROUTE_ID WHERE routes.TYPE = 'verejná' AND trainings.USER_ID = $userData->ID GROUP BY trainings.ROUTE_ID) 
+                UNION (SELECT o.ROUTE_ID, o.LENGTH, p.RUN FROM (SELECT teams.ID as TEAM_ID, teams.ROUTE_ID, routes.LENGTH FROM routes INNER JOIN teams ON teams.ROUTE_ID = routes.ID INNER JOIN users_teams ON teams.ID = users_teams.TEAM_ID WHERE users_teams.USER_ID = $userData->ID) o INNER JOIN (SELECT SUM(trainings.LENGTH) AS RUN, users_teams.TEAM_ID FROM trainings RIGHT JOIN users_teams on trainings.USER_ID = users_teams.USER_ID GROUP BY users_teams.TEAM_ID) p ON o.TEAM_ID = p.TEAM_ID)) AS active WHERE active.RUN < active.LENGTH";
+	$allowed = $db->getAssoc($sql,"ID");
+	var_dump($allowed);
 ?>
 <div class="container text-center">
     <div class="row">
@@ -63,8 +68,12 @@
 						<tr class="clickable-row" data-href="route.php?routeId=<?php echo $user["ROUTE_ID"]; ?>">
 							<td><?php echo $user["ROUTE_NAME"]; ?></td>
 							<td><?php echo number_format($user["LENGTH"]/1000,2,","," ")."km"; ?></td>
-							<td sorttable_customkey="<?php $routeactive = false; if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"]){$routeactive = true; echo 1;} else echo 2;?>">
-								<a class="<?php if($routeactive) echo "selected "; ?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
+							<td sorttable_customkey="<?php
+                            $routeactive = false;
+							$routedisabled = false;
+							if ($userData->ACTIVE_ROUTE==$user["ROUTE_ID"])
+							{$routeactive = true;echo 1;} else if(!in_array($user["ROUTE_ID"],$allowed)){$routedisabled = true; echo 3;} else echo 2;?>">
+								<a class="<?php if($routeactive) echo "selected "; elseif ($routedisabled) echo "disabled "?>routeSelector" data-id="<?php echo $user["ROUTE_ID"] ?>"></a>
 							</td>
 							<td><?php echo $user["TYPE"]; ?></td>
 							<?php if($userData->ROLE == "admin"): ?>

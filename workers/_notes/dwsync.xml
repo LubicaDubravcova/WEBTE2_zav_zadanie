@@ -4,4 +4,8 @@
 <file name="routeColorPalette.php" server="147.175.98.151/public_html/RealZaverecne/" local="131711084200000000" remote="131711084200000000" Dst="2" />
 <file name="printpdf.php" server="147.175.98.151/public_html/RealZaverecne/" local="131712050842577454" remote="131712050990000000" Dst="2" />
 <file name="routeData.php" server="147.175.98.151/public_html/RealZaverecne/" local="131712067943104530" remote="131712068090000000" Dst="2" />
+<file name="cron-delete.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710215275895719" remote="131712074210000000" Dst="2" />
+<file name="login.php" server="147.175.98.151/public_html/RealZaverecne/" local="131710471472569276" remote="131712074210000000" Dst="2" />
+<file name="logout.php" server="147.175.98.151/public_html/RealZaverecne/" local="131709512319108066" remote="131712074210000000" Dst="2" />
+<file name="selectRoute.php" server="147.175.98.151/public_html/RealZaverecne/" local="131711488293590586" remote="131712074210000000" Dst="2" />
 </dwsync>

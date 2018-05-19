@@ -25,7 +25,7 @@ $("#schoolCity").autocomplete({
 			response(parsed);
 		});
 	},
-	select: function( event, ui ) {
+	select: function() {
 		$(this).trigger("change");
 	},
 	minLength: 0
