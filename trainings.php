@@ -46,8 +46,8 @@ $result = $db->getAssoc($sql);
 					<?php $lengthSum = 0; if ($result)
 					foreach($result as $i=>$res): 
 					$lengthSum += $res['LENGTH']/1000; ?>
-					<tr>
-						<td><a href='route.php?routeID=<?php echo $res['routeID'];?>'> <?php echo $res['NAME'];?></a></td>
+					<tr class="clickable-row" data-href="route.php?routeId=<?php echo $res["routeID"]; ?>">
+						<td> <?php echo $res['NAME'];?></td>
 						<td><?php echo $res['DATE'];?></td>
 						<td><?php echo $res['LENGTH']/1000;?>km</td>
 						<td><?php echo $res['START_TIME'];?></td>
