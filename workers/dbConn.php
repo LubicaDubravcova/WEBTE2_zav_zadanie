@@ -528,7 +528,7 @@ class DBConn {
 			return;
 		}
 
-		$stmt->bind_param('iii', $userID, $userID, $userID);
+		$stmt->bind_param('iiii', $userID, $userID, $userID, $userID);
 
 		$status = $stmt->execute();
 		if($status === false) {
@@ -544,7 +544,8 @@ class DBConn {
 	// zaznamy su usporiadane podla LENGTH zostupne (descending)
 	// POZOR! pole je indexovane netypicky! pole[STLPEC][RIADOk] (viac mi to tak vyhovuje pri praci s nim)
 	function getRelayRouteProgress($routeId) {
-		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(users.FIRSTNAME, \" \", users.SURNAME SEPARATOR \", \") AS MEMBERS, COALESCE(lengths.lng, 0) AS LENGTH FROM teams
+		
+		$stmt = $this->db->prepare("SELECT users_teams.TEAM_ID AS TID, GROUP_CONCAT(users.FIRSTNAME, \" \", users.SURNAME ORDER BY users.ID SEPARATOR \", \") AS MEMBERS, COALESCE(lengths.lng, 0) AS LENGTH FROM teams
 JOIN users_teams ON users_teams.TEAM_ID=teams.ID
 JOIN users ON users.ID=users_teams.USER_ID
 LEFT JOIN 	(SELECT users_teams.TEAM_ID, COALESCE(SUM(trainings.LENGTH), 0) AS lng FROM trainings
@@ -559,7 +560,7 @@ GROUP BY teams.ID ORDER BY LENGTH DESC");
 			return;
 		}
 
-		$stmt->bind_param('ii', $routeId, $routeId);
+		$stmt->bind_param('ii', $routeId,$routeId);
 
 		$status = $stmt->execute();
 		if($status === false) {

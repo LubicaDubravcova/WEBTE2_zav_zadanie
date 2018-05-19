@@ -162,9 +162,10 @@
 		<?php if($userData->ACTIVE_ROUTE == null): ?>
 			<div class='row'><div class='btn btn-block btn-danger disabled'>Nie je možné pridať tréning, pokým si nezvolíte aktívnu trasu.</div></div>
 		<?php else: ?>
-		<?php if ($trainingCreationAttempted && $trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-danger disabled'>Tréning sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>"?>
-		<?php if ($trainingCreationAttempted && !$trainingCreateFailed) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Tréning bol úspešne pridaný.</div></div>"?>
-		<?php if ($trainingCreationAttempted && !$trainingCreateFailed && $routeCompleted) echo "<div class='row'><div class='btn btn-block btn-success disabled'>Gratulujeme dokoncili ste svou aktívnu trasu!</div></div>"?>
+		<?php if ($trainingCreationAttempted): if ($trainingCreateFailed): ?><div class='row'><div class='btn btn-block btn-danger disabled'>Tréning sa nepodarilo pridať. Skontrolujte správnosť zadaných údajov.</div></div>
+		<?php elseif($routeCompleted):?> <div class='row'><div class='btn btn-block btn-success'>Tréning bol úspešne pridaný.</div></div>
+		<?php else: ?><div class='row'><div class='btn btn-block btn-success'>Gratulujeme dokoncili ste svou aktívnu trasu!</div></div>
+		<?php endif; endif; ?>
 		<div class="row justify-content-center bg-light text-dark rounded p-5">
 			<div class="col">
 				<form method="post">
