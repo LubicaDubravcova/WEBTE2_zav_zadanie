@@ -88,7 +88,7 @@ $result = $db->getAssoc($sql);
                     </thead>
                     <tbody id="loadAverage">
 						<td>
-							<?php if($i != 0) echo $lengthSum/$i . "km/tréning";
+							<?php if(count($result) != 0) echo $lengthSum/count($result) . "km/tréning";
 							 else echo 0 . "km/tréning"; ?>
 						</td>
                     </tbody>
