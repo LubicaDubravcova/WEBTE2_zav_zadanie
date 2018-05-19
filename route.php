@@ -66,7 +66,6 @@ else {
 	else if($route["OWNER"] == $userData->ID) {
 		$routeAccess = true;
 	}
-
 	?>
 	<div class="container text-center">
 		<?php if(!$routeAccess): ?>
@@ -122,6 +121,36 @@ else {
 								</tr>
 							</thead>
 							<tbody id="load">
+							<?php for($i = 0; $i < count($progress["LENGTH"]); $i++): ?>
+								<tr>
+									<td sorttable_customkey="<?php echo $i?>">
+										<div class="legenColorBlock" style="background-color: <?php echo routeColorPalette::$subrouteColors[$i%count(routeColorPalette::$subrouteColors)]; ?>"></div>
+									</td>
+									<td>
+										<?php
+										if($route["TYPE"] == "Verejná") {
+											echo $progress["NAME"][$i];
+										}
+										else {
+											echo $progress["MEMBERS"][$i];
+										}
+										?>
+									</td>
+									<td>
+										<?php echo number_format($progress["LENGTH"][$i]/1000,2,","," ")."km"; ?>
+									</td>
+									<td>
+										<?php $percento = ($progress["LENGTH"][$i]/$route["LENGTH"]*100);
+										if($percento > 100) echo "100%";
+										else echo number_format($percento,2,","," ")."%"; ?>
+									</td>
+									<?php if($route["TYPE"] == "Štafeta" && $userData->ROLE == "admin"): ?>
+									<td>
+										<a class="btn" href="add-team.php?teamID=<?php echo $progress["TID"][$i]; ?>&routeID=<?php echo $_POST["routeId"]; ?>">Upraviť tím</a>
+									</td>
+									<?php endif; ?>
+								</tr>
+							<?php endfor; ?>
 							</tbody>
 						</table>
 					</div>
@@ -191,18 +220,14 @@ else {
 			removePolylines();
 			displayRoute(decodedPath, dataArray.LENGTH, false);
 		}
-
-		function AjaxTable() {
-			$("#load").load("ajax/routeTable.php",{routeId: "<?php echo $_GET["routeId"];?>"},fixSortOnAjax);
-		}
+		
+		selfLoad("#load",true,"routeId=<?php echo $_GET["routeId"];?>");
+		
 		$(document).ready(function(){
 			setInterval(AjaxMap, 5000);
-			AjaxTable();
-			setInterval(AjaxTable,5000);
 		});
 	</script>
 	<?php endif; endif;?>
-	<script src="scripts/sorttable.js"></script>
 </body>
 </html>
 

@@ -507,6 +507,17 @@ function fixSortOnAjax() {
 	}
 }
 
+function selfLoad(id, sortfix, data){
+	function loadSelf() {
+		if (sortfix) 
+			$(id).load(document.URL + " " + id + " tr",data,fixSortOnAjax);
+		else
+			$(id).load(document.URL + " " + id + " tr",data);
+	}
+	loadSelf();
+	setInterval(loadSelf,5000);
+}
+
 $(document).on("click", '.clickable-row', function() {
 	window.location = $(this).data("href");
 });
