@@ -11,7 +11,7 @@ if($_POST['selectUser_0'] != "" || $_POST['selectUser_1'] != "" || $_POST['selec
         $teamID = $conn->createTeam($_GET['routeID']);
     else{
         $teamID = $_GET['teamID'];
-        $conn->dropTeamMembers($_GET['teamID']);       //nebudem sa s tym srat a rovno dropnem clenov teamu a nahram novych
+        $conn->dropTeamMembers($teamID);       //nebudem sa s tym srat a rovno dropnem clenov teamu a nahram novych
     }
     if($_POST['selectUser_0'] != "")
         $conn->addToTeam($_POST['selectUser_0'], $teamID);
@@ -25,6 +25,13 @@ if($_POST['selectUser_0'] != "" || $_POST['selectUser_1'] != "" || $_POST['selec
         $conn->addToTeam($_POST['selectUser_4'], $teamID);
     if($_POST['selectUser_5'] != "")
         $conn->addToTeam($_POST['selectUser_5'], $teamID);
+}else{
+    if($_GET['teamID'] != "" AND $_POST['wasSent'] == "true"){
+        $conn->dropTeamMembers($_GET['teamID']);
+        $conn->deleteTeam($_GET['teamID']);
+        header('Location: route.php?routeId=' . $_GET['routeID']);
+        die();
+    }
 }
 
 $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SURNAME ASC");
@@ -111,6 +118,7 @@ $result = $conn->getAssoc("SELECT ID, FIRSTNAME, SURNAME FROM users ORDER BY SUR
                 <div class="form-group row">
                     <a href="route.php?routeId=<?php echo $routeID; ?>" class="btn btn-block btn-default bg-white">Naspäť k podrobnostiam trasy</a>
                 </div>
+                <input type="hidden" id="wasSent" name="wasSent" value="true">
             </form>
         </div>
     </div>
