@@ -78,14 +78,16 @@ body {
 .clickable-row {
 	cursor: pointer;
 }
+
 .sortable th {
 	cursor: pointer;
 	user-select: none;
 }
+
 .routeSelector {
 	cursor:pointer;
 	display:block;
-	background-image: url("../images/red-dot.png");
+	background-image: url("../images/gray-dot.png");
 	background-size: contain;
 	margin:auto;
 	width:25px;
@@ -93,6 +95,9 @@ body {
 }
 .routeSelector.selected{
 	background-image: url("../images/green-dot.png");
+}
+.routeSelector.disabled{
+	background-image: url("../images/red-dot.png");
 }
 @media only screen and (max-width: 1000px) {
     .footer {

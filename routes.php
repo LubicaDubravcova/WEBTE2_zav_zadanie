@@ -92,18 +92,19 @@ $("#sel").change(function() {
 	user = this.value;
 	reloadContent();
 });
-	
+
 setInterval(reloadContent,5000);
 
 $(document).on("click", '.routeSelector', function(event) {
     event.stopPropagation();
-    $.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){
-		if (data == "1") {
-			reloadContent(); 
-			document.getElementById("activeWrong").style.display = "none";} 
-		else {
-			document.getElementById("activeWrong").style.display = "block";}
-	});
+	if (!($(this).hasClass("disabled")))
+		$.post("workers/selectRoute.php", {id : <?php echo $userData->ID;?>, route: $(this).data("id")}, function(data){
+			if (data == "1") {
+				reloadContent(); 
+				document.getElementById("activeWrong").style.display = "none";} 
+			else {
+				document.getElementById("activeWrong").style.display = "block";}
+		});
 });
 </script>
 </body>
